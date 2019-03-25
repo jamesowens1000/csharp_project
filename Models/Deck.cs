@@ -32,6 +32,7 @@ namespace csharp_project.Models
                         //Ace is assigned a numeric value of 1, all other cards are assigned a numeric value equivalent to their face value
                         NewCard.Value = j+1;
                     }
+                    Cards.Add(NewCard);
                 }
             }
         }
@@ -49,7 +50,7 @@ namespace csharp_project.Models
             }
         }
 
-        //Deals a card by taking/ramoving the first card from the top of the deck and dealing/giving it out to a player
+        //Deals a card by taking/removing the first card from the top of the deck and dealing/giving it out to a player
         public Card Deal()
         {
             Card DealtCard = new Card();

@@ -47,8 +47,7 @@ namespace csharp_project.Models
     public class LoginPlayer
     {
         [Required]
-        [EmailAddress]
-        public string Email {get;set;}
+        public string Username {get;set;}
 
         [Required]
         [DataType(DataType.Password)]

@@ -34,3 +34,9 @@ body {
         display: none;
     }
 }
+.Dealer{
+    margin-top: 110%;
+}
+.Player{
+    margin-top: 150%;
+}

@@ -15,7 +15,16 @@
             <link rel="stylesheet" href="~/css/site.css" />
         </environment>
     </head>
-    <body BGCOLOR=#006633  TEXT=#e1ffd7 LINK=#FFFFFF VLINK=#FFFFFF>
+    <style>
+        body {
+            background: url(images/Background.png) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+    </style>
+    <body>
         <div class="container body-content">
             @RenderBody()
         </div>

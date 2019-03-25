@@ -11722,30 +11722,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\James\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "/Users/Andy/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\James\\Desktop\\CD\\C#\\csharp_project\\csharp_project.csproj",
+      "projectUniqueName": "/Users/Andy/Documents/coding_dojo/c#_stack/Project/csharp_project/csharp_project.csproj",
       "projectName": "csharp_project",
-      "projectPath": "C:\\Users\\James\\Desktop\\CD\\C#\\csharp_project\\csharp_project.csproj",
-      "packagesPath": "C:\\Users\\James\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\James\\Desktop\\CD\\C#\\csharp_project\\obj\\",
+      "projectPath": "/Users/Andy/Documents/coding_dojo/c#_stack/Project/csharp_project/csharp_project.csproj",
+      "packagesPath": "/Users/Andy/.nuget/packages/",
+      "outputPath": "/Users/Andy/Documents/coding_dojo/c#_stack/Project/csharp_project/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\James\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/Andy/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.1"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

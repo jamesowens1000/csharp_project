@@ -114,14 +114,14 @@ namespace csharp_project.Controllers
             return View("Dashboard");
         }
 
-        [HttpGet("/bet/{amnt}")]
+        [HttpGet("bet/{amnt}")]
         public IActionResult AddBetAmount(int amnt)
         {
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
 
             if (thisPlayer.Money >= thisPlayer.CurrHand.BetValue)
             {
-                if (thisPlayer.CurrHand.BetValue+amnt < 100)
+                if (thisPlayer.CurrHand.BetValue+amnt <= 100)
                 {
                     thisPlayer.CurrHand.BetValue += amnt;
                 }
@@ -150,8 +150,8 @@ namespace csharp_project.Controllers
             Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
 
             thisPlayer.CurrHand.PlayerCards.Add(thisDeck.Deal());   //Deal the Player's first card
-            dealerHand.PlayerCards.Add(thisDeck.Deal());    //Deal the Dealer's first card
-            thisPlayer.CurrHand.PlayerCards.Add(thisDeck.Deal());   //Deal the Player's second card (face down)
+            dealerHand.PlayerCards.Add(thisDeck.Deal());    //Deal the Dealer's first card (face down)
+            thisPlayer.CurrHand.PlayerCards.Add(thisDeck.Deal());   //Deal the Player's second card
             dealerHand.PlayerCards.Add(thisDeck.Deal());    //Deal the Dealer's second card
 
             //Check if player has BlackJack
@@ -162,6 +162,8 @@ namespace csharp_project.Controllers
                 HttpContext.Session.SetString("message", "You win with a BlackJack!");
             }
 
+            HttpContext.Session.SetObjectAsJson("CurrentDeck", thisDeck);
+            HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return RedirectToAction("Dashboard");
         }

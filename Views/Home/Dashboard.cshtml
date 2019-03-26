@@ -1,0 +1,42 @@
+<div class="row">
+    <div class="col">
+        <table class="Chip">
+            <tr>
+                <td ALIGN=CENTER><a href="/bet/5"><img src="images/Chip_5.png" alt="5 dollar" height="80" width="80"></a></td>
+                <td ALIGN=CENTER><a href="/bet/10"><img src="images/Chip_10.png" alt="5 dollar" height="80" width="80"></a></td>
+                <td ALIGN=CENTER><a href="/bet/25"><img src="images/Chip_25.png" alt="5 dollar" height="80" width="80"></a></td>
+                <td ALIGN=CENTER><a href="/bet/50"><img src="images/Chip_50.png" alt="5 dollar" height="80" width="80"></a></td>
+                <td ALIGN=CENTER><a href="/bet/100"><img src="images/Chip_100.png" alt="5 dollar" height="80" width="80"></a></td>
+                <td>
+                    <a href="/submitBet"><button type="button" class="btn btn-success">Bet</button></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="align-center">
+        @if(@ViewBag.ThisPlayer.CurrHand.PlayerCards != null)
+        {
+            if(@ViewBag.ThisPlayer.CurrHand.PlayerCards.Count > 0)
+            { 
+                <table class="Dealer">
+                    <tr>
+                        <td ALIGN=CENTER><IMG SRC="images/Dealer.png"></TD>
+                        <td ALIGN=CENTER><IMG SRC="images/Hearts_Two.png"></TD>
+                    </tr>
+                </table>
+                <table class="Player">
+                    <tr>
+                        <td ALIGN=CENTER><IMG SRC="images/@ViewBag.FirstCard"></TD>
+                        <td ALIGN=CENTER><IMG SRC="images/@ViewBag.SecondCard"></TD>
+                    </tr>
+                </table>
+            }
+        }
+    </div>
+    <div class="col">
+        @if(@ViewBag.Message!=null)
+        {
+            @ViewBag.Message
+        }
+    </div>
+</div>

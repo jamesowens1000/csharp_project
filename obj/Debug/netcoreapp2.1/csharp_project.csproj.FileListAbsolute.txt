@@ -24,3 +24,5 @@
 /Users/Andy/Documents/coding_dojo/c#_stack/Project/csharp_project/obj/Debug/netcoreapp2.1/csharp_project.dll
 /Users/Andy/Documents/coding_dojo/c#_stack/Project/csharp_project/obj/Debug/netcoreapp2.1/csharp_project.pdb
 /Users/Andy/Documents/coding_dojo/c#_stack/Project/csharp_project/obj/Debug/netcoreapp2.1/csharp_project.csproj.CopyComplete
+/Users/Andy/Documents/coding_dojo/c#_stack/Project/csharp_project/obj/Debug/netcoreapp2.1/Razor/Views/Home/Dashboard.g.cshtml.cs
+/Users/Andy/Documents/coding_dojo/c#_stack/Project/csharp_project/obj/Debug/netcoreapp2.1/Razor/Views/Home/Login.g.cshtml.cs

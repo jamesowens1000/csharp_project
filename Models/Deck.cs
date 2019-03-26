@@ -38,15 +38,19 @@ namespace csharp_project.Models
         }
 
         //Shuffles the deck by reordering the cards against random indexes
-        public void Shuffle()
+        //This method accepts an int value as the number of times the deck should be shuffled
+        public void Shuffle(int shuffTimes)
         {
-            Random rand = new Random();
-            for (int i = 0; i < Cards.Count; i++)
+            for (int t = 1; t <= shuffTimes; t++)
             {
-                Card temp = Cards[i];
-                int randIndex = rand.Next(i, Cards.Count);
-                Cards[i] = Cards[randIndex];
-                Cards[randIndex] = temp;
+                Random rand = new Random();
+                for (int i = 0; i < Cards.Count; i++)
+                {
+                    Card temp = Cards[i];
+                    int randIndex = rand.Next(i, Cards.Count);
+                    Cards[i] = Cards[randIndex];
+                    Cards[randIndex] = temp;
+                }
             }
         }
 

@@ -25,6 +25,7 @@ namespace csharp_project.Models
         [DataType(DataType.Password)]
         public string Confirm {get;set;}
 
+        
         [NotMapped]
         public Hand CurrHand {get;set;}
         // public List<Hand> CurrHands {get;set;}   //Add this back in for when a player can have multiple hands

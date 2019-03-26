@@ -20,19 +20,19 @@ namespace csharp_project.Controllers
         {
             dbContext = context;
         }
-
+//Index
         [HttpGet("")]
         public IActionResult Index()
         {
-            Deck newDeck = new Deck();
-            newDeck.Shuffle();
-            Card FirstCard = newDeck.Deal();
-            Card SecondCard = newDeck.Deal();
-            ViewBag.FirstCard = FirstCard.Suit+"_"+FirstCard.Face+".png";
-            ViewBag.SecondCard = SecondCard.Suit+"_"+SecondCard.Face+".png";
+            // Deck newDeck = new Deck();
+            // newDeck.Shuffle();
+            // Card FirstCard = newDeck.Deal();
+            // Card SecondCard = newDeck.Deal();
+            // ViewBag.FirstCard = FirstCard.Suit+"_"+FirstCard.Face+".png";
+            // ViewBag.SecondCard = SecondCard.Suit+"_"+SecondCard.Face+".png";
             return View();
         }
-
+//Register
         [HttpPost("register")]
         public IActionResult TryRegister(Player newPlayer)
         {
@@ -55,7 +55,7 @@ namespace csharp_project.Controllers
             }
             return View("Index", newPlayer);
         }
-
+//Login
         [HttpPost("login")]
         public IActionResult TryLogin(LoginPlayer logPlayer)
         {
@@ -85,7 +85,7 @@ namespace csharp_project.Controllers
             }
             return View("Index", logPlayer);
         }
-
+//DashBoard
         [HttpGet("Dashboard")]
         public IActionResult Dashboard()
         {
@@ -120,6 +120,7 @@ namespace csharp_project.Controllers
             return View("Dashboard");
         }
 
+//AddBetAmount
         [HttpGet("bet/{amnt}")]
         public IActionResult AddBetAmount(int amnt)
         {
@@ -140,11 +141,11 @@ namespace csharp_project.Controllers
             {
                 HttpContext.Session.SetString("message", "You can't bet that much!");
             }
-
+            Console.WriteLine(thisPlayer.CurrHand.BetValue);
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return RedirectToAction("Dashboard");
         }
-
+//SubmitBet
         [HttpGet("submitBet")]
         public IActionResult SubmitBet()
         {
@@ -173,7 +174,7 @@ namespace csharp_project.Controllers
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return RedirectToAction("Dashboard");
         }
-
+//Stand
         [HttpGet("stand")]
         public IActionResult Stand()
         {

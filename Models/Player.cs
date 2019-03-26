@@ -25,22 +25,13 @@ namespace csharp_project.Models
         [DataType(DataType.Password)]
         public string Confirm {get;set;}
 
-        public List<Hand> CurrHands {get;set;}
+        public Hand CurrHand {get;set;}
+        // public List<Hand> CurrHands {get;set;}   //Add this back in for when a player can have multiple hands
 
         //Player constructor
         public Player()
         {
-            CurrHands = new List<Hand>();
-            Hand Hand1 = new Hand();
-            CurrHands.Add(Hand1);
-        }
-
-        public Card Draw()
-        {
-            Deck thisDeck = new Deck();
-            Card drawnCard = thisDeck.Deal();
-            CurrHands[0].PlayerCards.Add(drawnCard);
-            return drawnCard;
+            CurrHand = new Hand();
         }
     }
 

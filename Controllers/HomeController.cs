@@ -14,6 +14,12 @@ namespace csharp_project.Controllers
         [HttpGet("")]
         public IActionResult Index()
         {
+            Deck newDeck = new Deck();
+            newDeck.Shuffle();
+            Card FirstCard = newDeck.Deal();
+            Card SecondCard = newDeck.Deal();
+            ViewBag.FirstCard = FirstCard.Suit+"_"+FirstCard.Face+".png";
+            ViewBag.SecondCard = SecondCard.Suit+"_"+SecondCard.Face+".png";
             return View();
         }
     }

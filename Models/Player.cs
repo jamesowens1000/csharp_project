@@ -24,6 +24,7 @@ namespace csharp_project.Models
         [Compare("Password")]
         [DataType(DataType.Password)]
         public string Confirm {get;set;}
+
         
         [NotMapped]
         public Hand CurrHand {get;set;}
@@ -34,6 +35,8 @@ namespace csharp_project.Models
         {
             CurrHand = new Hand();
             Money = 1000;
+            HandsPlayed = 0;
+            HandsWon = 0;
         }
     }
 

@@ -34,26 +34,29 @@ namespace csharp_project.Controllers
         }
 //Register
         [HttpPost("register")]
-        public IActionResult TryRegister(Player newPlayer)
+        public IActionResult TryRegister(Player regPlayer)
         {
             if (ModelState.IsValid)
             {
-                if (dbContext.Players.Any(p => p.Username == newPlayer.Username))
+                if (dbContext.Players.Any(p => p.Username == regPlayer.Username))
                 {
                     ModelState.AddModelError("Username", "Username already in use!");
                 }
                 else
                 {
                     PasswordHasher<Player> Hasher = new PasswordHasher<Player>();
-                    newPlayer.Password = Hasher.HashPassword(newPlayer, newPlayer.Password);
-                    dbContext.Add(newPlayer);
+                    regPlayer.Password = Hasher.HashPassword(regPlayer, regPlayer.Password);
+                    Player createdPlayer = new Player();
+                    createdPlayer.Username = regPlayer.Username;
+                    createdPlayer.Password = regPlayer.Password;
+                    dbContext.Add(createdPlayer);
                     dbContext.SaveChanges();
-                    Player ThisPlayer = dbContext.Players.FirstOrDefault(u => u.Username == newPlayer.Username);
+                    Player ThisPlayer = dbContext.Players.FirstOrDefault(u => u.Username == createdPlayer.Username);
                     HttpContext.Session.SetObjectAsJson("ThisPlayer", ThisPlayer);
                     return RedirectToAction("Dashboard");
                 }
             }
-            return View("Index", newPlayer);
+            return View("Index", regPlayer);
         }
 //Login
         [HttpPost("login")]
@@ -126,11 +129,18 @@ namespace csharp_project.Controllers
         {
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
 
-            if (thisPlayer.Money >= thisPlayer.CurrHand.BetValue)
+            if (HttpContext.Session.GetInt32("CurrBetAmnt") == null)
             {
-                if (thisPlayer.CurrHand.BetValue+amnt <= 100)
+                HttpContext.Session.SetInt32("CurrBetAmnt", 0);
+            }
+
+            if (thisPlayer.Money >= HttpContext.Session.GetInt32("CurrBetAmnt"))
+            {
+                if (HttpContext.Session.GetInt32("CurrBetAmnt")+amnt <= 100)
                 {
-                    thisPlayer.CurrHand.BetValue += amnt;
+                    int tempCurrBet = (int)HttpContext.Session.GetInt32("CurrBetAmnt");
+                    tempCurrBet += amnt;
+                    HttpContext.Session.SetInt32("CurrBetAmnt", tempCurrBet);
                 }
                 else
                 {
@@ -141,7 +151,6 @@ namespace csharp_project.Controllers
             {
                 HttpContext.Session.SetString("message", "You can't bet that much!");
             }
-            Console.WriteLine(thisPlayer.CurrHand.BetValue);
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return RedirectToAction("Dashboard");
         }
@@ -150,12 +159,20 @@ namespace csharp_project.Controllers
         public IActionResult SubmitBet()
         {
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+            thisPlayer.CurrHand = new Hand();
+            thisPlayer.CurrHand.BetValue = (int)HttpContext.Session.GetInt32("CurrBetAmnt");
             thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
+            Console.WriteLine("Money Remaining: "+thisPlayer.Money);
 
-            //Deal Cards from Deck
+            //Initialize the Deck of Cards and the Dealer's Hand
             Deck thisDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
             Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
 
+            //Instantiate a List of Cards for both the Player and the Dealer
+            thisPlayer.CurrHand.PlayerCards = new List<Card>();
+            dealerHand.PlayerCards = new List<Card>();
+
+            //Deal Cards from Deck
             thisPlayer.CurrHand.PlayerCards.Add(thisDeck.Deal());   //Deal the Player's first card
             dealerHand.PlayerCards.Add(thisDeck.Deal());    //Deal the Dealer's first card (face down)
             thisPlayer.CurrHand.PlayerCards.Add(thisDeck.Deal());   //Deal the Player's second card

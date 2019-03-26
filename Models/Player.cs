@@ -33,7 +33,6 @@ namespace csharp_project.Models
         //Player constructor
         public Player()
         {
-            CurrHand = new Hand();
             Money = 1000;
             HandsPlayed = 0;
             HandsWon = 0;

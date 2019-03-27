@@ -1,24 +1,23 @@
-﻿@model Player
-
+﻿@model IndexViewModel
 <div class="container">
     <div class="row">
         <div class ="col-3">
             <h1>Registration</h1>
             <form asp-action="TryRegister" asp-controller="Home" method="post">
                 <div class="form-group">
-                    <span asp-validation-for="Username"></span>
-                    <label asp-for="Username">User Name</label>
-                    <input asp-for="Username" class="form-control">
+                    <span asp-validation-for="RegPlayer.Username"></span>
+                    <label asp-for="RegPlayer.Username">User Name</label>
+                    <input asp-for="RegPlayer.Username" class="form-control">
                 </div>  
                 <div class="form-group">
-                    <span asp-validation-for="Password"></span>
-                    <label asp-for="Password">Password</label>
-                    <input asp-for="Password" type="password" class="form-control">
+                    <span asp-validation-for="RegPlayer.Password"></span>
+                    <label asp-for="RegPlayer.Password">Password</label>
+                    <input asp-for="RegPlayer.Password" type="password" class="form-control">
                 </div>
                 <div class="form-group">
-                    <span asp-validation-for="Confirm"></span>
-                    <label asp-for="Confirm">Confirm Password</label>
-                    <input asp-for="Confirm" class="form-control">
+                    <span asp-validation-for="RegPlayer.Confirm"></span>
+                    <label asp-for="RegPlayer.Confirm">Confirm Password</label>
+                    <input asp-for="RegPlayer.Confirm" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </form>
@@ -26,7 +25,21 @@
         <div class ="col-2">
         </div>
         <div class ="col-3">
-            <partial name="Login.cshtml" />
+            <h1>Login</h1>
+            <form asp-action="TryLogin" asp-controller="Home" method="post">
+                <div class="form-group">
+                    <span asp-validation-for="LogPlayer.Username"></span>
+                    <label asp-for="LogPlayer.Username">User Name</label>
+                    <input asp-for="LogPlayer.Username" class="form-control">
+                </div>
+                <div class="form-group">
+                    <span asp-validation-for="LogPlayer.Password"></span>
+                    <label asp-for="LogPlayer.Password">Password</label>
+                    <input asp-for="LogPlayer.Password" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-success">Login</button>
+            </form>
+            <!-- <partial name="Login.cshtml" /> -->
         </div>
     </div>
 </div>

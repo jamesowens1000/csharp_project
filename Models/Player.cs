@@ -48,4 +48,10 @@ namespace csharp_project.Models
         [DataType(DataType.Password)]
         public string Password {get;set;}
     }
+
+    public class IndexViewModel
+    {
+        public LoginPlayer LogPlayer {get;set;}
+        public Player RegPlayer {get;set;}
+    }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -28,13 +28,14 @@ namespace csharp_project.Controllers
         }
         //Register
         [HttpPost("register")]
-        public IActionResult TryRegister(Player regPlayer)
+        public IActionResult TryRegister(IndexViewModel modelData)
         {
+            Player regPlayer = modelData.RegPlayer;
             if (ModelState.IsValid)
             {
                 if (dbContext.Players.Any(p => p.Username == regPlayer.Username))
                 {
-                    ModelState.AddModelError("Username", "Username already in use!");
+                    ModelState.AddModelError("RegPlayer.Username", "Username already in use!");
                 }
                 else
                 {
@@ -50,19 +51,20 @@ namespace csharp_project.Controllers
                     return RedirectToAction("Dashboard");
                 }
             }
-            return View("Index", regPlayer);
+            return View("Index", modelData);
         }
         //Login
         [HttpPost("login")]
-        public IActionResult TryLogin(LoginPlayer logPlayer)
+        public IActionResult TryLogin(IndexViewModel modelData)
         {
+            LoginPlayer logPlayer = modelData.LogPlayer;
             if (ModelState.IsValid)
             {
                 Player PlayerInDb = dbContext.Players.FirstOrDefault(p => p.Username == logPlayer.Username);
 
                 if (PlayerInDb == null)
                 {
-                    ModelState.AddModelError("Username", "Invalid Username/Password");
+                    ModelState.AddModelError("LogPlayer.Username", "Invalid Username/Password");
                 }
                 else
                 {
@@ -71,7 +73,7 @@ namespace csharp_project.Controllers
 
                     if (result == 0)
                     {
-                        ModelState.AddModelError("LogUser.Email", "Invalid Email/Password");
+                        ModelState.AddModelError("LogPlayer.Username", "Invalid Username/Password");
                     }
                     else
                     {
@@ -80,7 +82,7 @@ namespace csharp_project.Controllers
                     }
                 }
             }
-            return View("Index", logPlayer);
+            return View("Index", modelData);
         }
         //DashBoard
         [HttpGet("Dashboard")]

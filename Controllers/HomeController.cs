@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -24,12 +24,6 @@ namespace csharp_project.Controllers
         [HttpGet("")]
         public IActionResult Index()
         {
-            // Deck newDeck = new Deck();
-            // newDeck.Shuffle();
-            // Card FirstCard = newDeck.Deal();
-            // Card SecondCard = newDeck.Deal();
-            // ViewBag.FirstCard = FirstCard.Suit+"_"+FirstCard.Face+".png";
-            // ViewBag.SecondCard = SecondCard.Suit+"_"+SecondCard.Face+".png";
             return View();
         }
         //Register
@@ -98,9 +92,6 @@ namespace csharp_project.Controllers
                 return RedirectToAction("Index");
             }
 
-            Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
-            ViewBag.ThisPlayer = thisPlayer;
-
             //If the Dealer does not have a Hand in session, then create one
             if (HttpContext.Session.GetObjectFromJson<Hand>("DealerHand") == null)
             {
@@ -110,7 +101,22 @@ namespace csharp_project.Controllers
 
             ViewBag.Message = HttpContext.Session.GetString("message");
 
-            HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+
+            Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+            ViewBag.ThisPlayer = thisPlayer;
+            if(thisPlayer.CurrHand != null)
+            {
+                List<string> PlayerCards = new List<string>();
+                foreach (var card in thisPlayer.CurrHand.PlayerCards)
+                {
+                PlayerCards.Add(card.Suit+"_"+card.Face+".png");
+                }
+                ViewBag.PlayerCards = PlayerCards;
+            }
+            Hand DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+
+
+            // HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return View("Dashboard");
         }
 
@@ -148,7 +154,8 @@ namespace csharp_project.Controllers
 
             return RedirectToAction("Dashboard");
         }
-        //SubmitBet
+        
+ //SubmitBet
         [HttpGet("submitBet")]
         public IActionResult SubmitBet()
         {
@@ -161,8 +168,10 @@ namespace csharp_project.Controllers
             Console.WriteLine("Money Remaining: " + thisPlayer.Money);
 
             Deck thisDeck = new Deck();
-            thisDeck.Shuffle(3);
             Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+
+            //Shuffle Deck three times;
+            thisDeck.Shuffle(3);
 
             //Instantiate a List of Cards for both the Player and the Dealer
             thisPlayer.CurrHand.PlayerCards = new List<Card>();

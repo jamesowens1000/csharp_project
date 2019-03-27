@@ -5,18 +5,24 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position-y: 106%;
+    overflow:hidden;
 }
 
 .Dealer{
     position: relative;
     top: 15vh;
-    align-self: center;
+    margin: 0px auto;
 }
 .Player{
     position: relative;
-    top: 32vh;
+    top: 29vh;
+    margin: 0px auto;
 }
-
+.Message{
+    position: relative;
+    top: 22vh;
+    text-align:center;
+}
 .Chip {
     position: relative;
     top: 83vh;
@@ -27,4 +33,5 @@
     top: 85vh;
     left: 25vw;
 }
+
 

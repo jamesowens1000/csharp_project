@@ -20,7 +20,7 @@ namespace csharp_project.Controllers
         {
             dbContext = context;
         }
-//Index
+        //Index
         [HttpGet("")]
         public IActionResult Index()
         {
@@ -32,7 +32,7 @@ namespace csharp_project.Controllers
             // ViewBag.SecondCard = SecondCard.Suit+"_"+SecondCard.Face+".png";
             return View();
         }
-//Register
+        //Register
         [HttpPost("register")]
         public IActionResult TryRegister(Player regPlayer)
         {
@@ -58,7 +58,7 @@ namespace csharp_project.Controllers
             }
             return View("Index", regPlayer);
         }
-//Login
+        //Login
         [HttpPost("login")]
         public IActionResult TryLogin(LoginPlayer logPlayer)
         {
@@ -88,7 +88,7 @@ namespace csharp_project.Controllers
             }
             return View("Index", logPlayer);
         }
-//DashBoard
+        //DashBoard
         [HttpGet("Dashboard")]
         public IActionResult Dashboard()
         {
@@ -108,22 +108,13 @@ namespace csharp_project.Controllers
             }
             ViewBag.DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
 
-            //If there is no CurrentDeck, then create a new one and shuffle it
-            if (HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck") == null)
-            {
-                Deck currDeck = new Deck();
-                currDeck.Shuffle(3);
-                HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
-            }
-            ViewBag.CurrentDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
-
             ViewBag.Message = HttpContext.Session.GetString("message");
 
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return View("Dashboard");
         }
 
-//AddBetAmount
+        //AddBetAmount
         [HttpGet("bet/{amnt}")]
         public IActionResult AddBetAmount(int amnt)
         {
@@ -136,7 +127,7 @@ namespace csharp_project.Controllers
 
             if (thisPlayer.Money >= HttpContext.Session.GetInt32("CurrBetAmnt"))
             {
-                if (HttpContext.Session.GetInt32("CurrBetAmnt")+amnt <= 100)
+                if (HttpContext.Session.GetInt32("CurrBetAmnt") + amnt <= 100)
                 {
                     int tempCurrBet = (int)HttpContext.Session.GetInt32("CurrBetAmnt");
                     tempCurrBet += amnt;
@@ -152,20 +143,23 @@ namespace csharp_project.Controllers
                 HttpContext.Session.SetString("message", "You can't bet that much!");
             }
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+
             return RedirectToAction("Dashboard");
         }
-//SubmitBet
+        //SubmitBet
         [HttpGet("submitBet")]
         public IActionResult SubmitBet()
         {
+
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+
             thisPlayer.CurrHand = new Hand();
             thisPlayer.CurrHand.BetValue = (int)HttpContext.Session.GetInt32("CurrBetAmnt");
             thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
-            Console.WriteLine("Money Remaining: "+thisPlayer.Money);
+            Console.WriteLine("Money Remaining: " + thisPlayer.Money);
 
-            //Initialize the Deck of Cards and the Dealer's Hand
-            Deck thisDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
+            Deck thisDeck = new Deck();
+            thisDeck.Shuffle(3);
             Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
 
             //Instantiate a List of Cards for both the Player and the Dealer
@@ -177,21 +171,30 @@ namespace csharp_project.Controllers
             dealerHand.PlayerCards.Add(thisDeck.Deal());    //Deal the Dealer's first card (face down)
             thisPlayer.CurrHand.PlayerCards.Add(thisDeck.Deal());   //Deal the Player's second card
             dealerHand.PlayerCards.Add(thisDeck.Deal());    //Deal the Dealer's second card
+            foreach (var i in thisPlayer.CurrHand.PlayerCards)
+            {
+                Console.WriteLine("Player has " + i.Face + " of " + i.Suit);
+
+            }
+            thisPlayer.CurrHand.CalculateHandValue();
+            Console.WriteLine("Amount of cards in deck " + thisDeck.Cards.Count);
+            Console.WriteLine("Current hand value is " + thisPlayer.CurrHand.HandValue);
 
             //Check if player has BlackJack
             //If the players' cards add up to 21 and they only have 2 cards, then they win with a BlackJack
             if (thisPlayer.CurrHand.HandValue == 21 && thisPlayer.CurrHand.PlayerCards.Count == 2)
             {
-                thisPlayer.Money += (thisPlayer.CurrHand.BetValue + thisPlayer.CurrHand.BetValue*2);
+                thisPlayer.Money += (thisPlayer.CurrHand.BetValue + thisPlayer.CurrHand.BetValue * 2);
                 HttpContext.Session.SetString("message", "You win with a BlackJack!");
             }
 
             HttpContext.Session.SetObjectAsJson("CurrentDeck", thisDeck);
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+
             return RedirectToAction("Dashboard");
         }
-//Stand
+        //Stand
         [HttpGet("stand")]
         public IActionResult Stand()
         {
@@ -210,6 +213,54 @@ namespace csharp_project.Controllers
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return RedirectToAction("Dashboard");
         }
+        //hit
+        [HttpGet("hit")]
+        public IActionResult Hit()
+        {
+            Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+            Deck currDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
+            Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            currDeck.Cards.RemoveRange(0,52);
+
+            Console.WriteLine(currDeck.Cards.Count);
+
+            thisPlayer.CurrHand.PlayerCards.Add(currDeck.Deal());
+
+            thisPlayer.CurrHand.CalculateHandValue();
+            Console.WriteLine("Current hand value is " + thisPlayer.CurrHand.HandValue);
+
+            HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
+            HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+            HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+
+            return RedirectToAction("Dashboard");
+        }
+        [HttpGet("double")]
+        public IActionResult Double()
+        {
+            Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+            Deck currDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
+            Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            currDeck.Cards.RemoveRange(0,52);
+
+            if (thisPlayer.Money - thisPlayer.CurrHand.BetValue >= 0)
+            {
+                thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
+                thisPlayer.CurrHand.BetValue = thisPlayer.CurrHand.BetValue * 2;
+                return RedirectToAction("hit");
+            }
+            else
+            {
+                HttpContext.Session.SetString("message", "You don't have enough to double!");
+            }
+
+            HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
+            HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+            HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+
+            return RedirectToAction("Dashboard");
+        }
+
     }
 
     public static class SessionExtensions
@@ -220,7 +271,7 @@ namespace csharp_project.Controllers
             // This helper function simply serializes the object to JSON and stores it as a string in session
             session.SetString(key, JsonConvert.SerializeObject(value));
         }
-        
+
         // generic type T is a stand-in indicating that we need to specify the type on retrieval
         public static T GetObjectFromJson<T>(this ISession session, string key)
         {

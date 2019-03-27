@@ -213,18 +213,19 @@ namespace csharp_project.Controllers
         [HttpGet("DealerLogic")]
         public IActionResult DealerLogic()
         {
-            Deck thisDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
+            Deck currDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
             Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            currDeck.Cards.RemoveRange(0,52);
 
             dealerHand.CalculateHandValue();
 
             while (dealerHand.HandValue < 17)
             {
-                dealerHand.PlayerCards.Add(thisDeck.Deal());
+                dealerHand.PlayerCards.Add(currDeck.Deal());
                 dealerHand.CalculateHandValue();
             }
 
-            HttpContext.Session.SetObjectAsJson("CurrentDeck", thisDeck);
+            HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             return RedirectToAction("DetermineWinner");
         }

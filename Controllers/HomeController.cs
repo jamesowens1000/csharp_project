@@ -21,14 +21,14 @@ namespace csharp_project.Controllers
             dbContext = context;
         }
 
-//Index
+        //Index
         [HttpGet("")]
         public IActionResult Index()
         {
             return View();
         }
 
-//Register
+        //Register
         [HttpPost("register")]
         public IActionResult TryRegister(IndexViewModel modelData)
         {
@@ -55,8 +55,8 @@ namespace csharp_project.Controllers
             }
             return View("Index", modelData);
         }
-        
-//Login
+
+        //Login
         [HttpPost("login")]
         public IActionResult TryLogin(IndexViewModel modelData)
         {
@@ -88,7 +88,7 @@ namespace csharp_project.Controllers
             return View("Index", modelData);
         }
 
-//DashBoard
+        //DashBoard
         [HttpGet("Dashboard")]
         public IActionResult Dashboard()
         {
@@ -137,7 +137,7 @@ namespace csharp_project.Controllers
             return View("Dashboard");
         }
 
-//AddBetAmount
+        //AddBetAmount
         [HttpGet("bet/{amnt}")]
         public IActionResult AddBetAmount(int amnt)
         {
@@ -172,7 +172,7 @@ namespace csharp_project.Controllers
             return RedirectToAction("Dashboard");
         }
 
-//SubmitBet
+        //SubmitBet
         [HttpGet("submitBet")]
         public IActionResult SubmitBet()
         {
@@ -215,7 +215,12 @@ namespace csharp_project.Controllers
             //If the players' cards add up to 21 and they only have 2 cards, then they win with a BlackJack
             if (thisPlayer.CurrHand.HandValue == 21 && thisPlayer.CurrHand.PlayerCards.Count == 2)
             {
-                thisPlayer.Money += (thisPlayer.CurrHand.BetValue + thisPlayer.CurrHand.BetValue * 2);
+                Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
+                RetrievedPlayer.HandsPlayed++;
+                RetrievedPlayer.HandsWon++;
+                RetrievedPlayer.Money += (thisPlayer.CurrHand.BetValue * 2);
+                dbContext.SaveChanges();
+
                 HttpContext.Session.SetString("message", "You win with a BlackJack!");
                 HttpContext.Session.SetString("Endgame", "true");
             }
@@ -226,8 +231,8 @@ namespace csharp_project.Controllers
 
             return RedirectToAction("Dashboard");
         }
-        
-//Hit
+
+        //Hit
         [HttpGet("hit")]
         public IActionResult Hit()
         {
@@ -243,6 +248,11 @@ namespace csharp_project.Controllers
 
             if (thisPlayer.CurrHand.HandValue > 21)
             {
+
+                Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
+                RetrievedPlayer.HandsPlayed++;
+                RetrievedPlayer.Money -= (thisPlayer.CurrHand.BetValue);
+                dbContext.SaveChanges();
                 HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
                 HttpContext.Session.SetString("Endgame", "true");
                 HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
@@ -258,7 +268,7 @@ namespace csharp_project.Controllers
             return RedirectToAction("Dashboard");
         }
 
-//Double
+        //Double
         [HttpGet("double")]
         public IActionResult Double()
         {
@@ -275,6 +285,10 @@ namespace csharp_project.Controllers
                 thisPlayer.CurrHand.CalculateHandValue();
                 if (thisPlayer.CurrHand.HandValue > 21)
                 {
+                    Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
+                    RetrievedPlayer.HandsPlayed++;
+                    RetrievedPlayer.Money -= (thisPlayer.CurrHand.BetValue * 2);
+                    dbContext.SaveChanges();
                     HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
                     HttpContext.Session.SetString("Endgame", "true");
                     HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
@@ -296,8 +310,8 @@ namespace csharp_project.Controllers
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             return RedirectToAction("Dashboard");
         }
-        
- //DealerLogic
+
+        //DealerLogic
         [HttpGet("DealerLogic")]
         public IActionResult DealerLogic()
         {
@@ -319,8 +333,8 @@ namespace csharp_project.Controllers
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             return RedirectToAction("DetermineWinner");
         }
-        
- //DetermineWinner
+
+        //DetermineWinner
         [HttpGet("DetermineWinner")]
         public IActionResult DetermineWinner()
         {
@@ -377,14 +391,14 @@ namespace csharp_project.Controllers
             //Commit the Player's HandsPlayed, HandsWon, and Money to the database
             Console.WriteLine("Saving Player to DB");
             dbContext.SaveChanges();
-            
+
             HttpContext.Session.SetString("Endgame", "true");
             HttpContext.Session.SetObjectAsJson("thisPlayer", thisPlayer);
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             return RedirectToAction("Dashboard");
         }
 
-//EndGame
+        //EndGame
         [HttpGet("endgame")]
         public IActionResult Endgame()
         {
@@ -392,6 +406,7 @@ namespace csharp_project.Controllers
             HttpContext.Session.Remove("CurrentDeck");
             HttpContext.Session.Remove("DealerHand");
             HttpContext.Session.Remove("Stand");
+            HttpContext.Session.Remove("CurrBetAmnt");
             thisPlayer.CurrHand = null;
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
 
@@ -399,7 +414,7 @@ namespace csharp_project.Controllers
             return RedirectToAction("Dashboard");
         }
 
-//Logout
+        //Logout
         [HttpGet("logout")]
         public IActionResult Logout()
         {

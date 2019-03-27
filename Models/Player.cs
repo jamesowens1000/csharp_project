@@ -17,7 +17,10 @@ namespace csharp_project.Models
         public string Password {get;set;}
         public double Money {get;set;}
         public int HandsPlayed {get;set;}
+        public int HandsPushed {get;set;}
         public int HandsWon {get;set;}
+        public DateTime CreatedAt {get;set;} = DateTime.Now;
+        public DateTime UpdatedAt {get;set;} = DateTime.Now;
 
         //These are the properties that will NOT be stored in the DB
         [NotMapped]
@@ -35,6 +38,7 @@ namespace csharp_project.Models
         {
             Money = 1000;
             HandsPlayed = 0;
+            HandsPushed = 0;
             HandsWon = 0;
         }
     }

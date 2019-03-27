@@ -221,6 +221,7 @@ namespace csharp_project.Controllers
                 Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
                 RetrievedPlayer.HandsPlayed++;
                 RetrievedPlayer.HandsWon++;
+                thisPlayer.Money += (thisPlayer.CurrHand.BetValue * 2);
                 RetrievedPlayer.Money += (thisPlayer.CurrHand.BetValue * 2);
                 dbContext.SaveChanges();
 
@@ -254,7 +255,8 @@ namespace csharp_project.Controllers
 
                 Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
                 RetrievedPlayer.HandsPlayed++;
-                RetrievedPlayer.Money -= (thisPlayer.CurrHand.BetValue);
+                thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
+                RetrievedPlayer.Money -= thisPlayer.CurrHand.BetValue;
                 dbContext.SaveChanges();
                 HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
                 HttpContext.Session.SetString("Endgame", "true");
@@ -290,6 +292,7 @@ namespace csharp_project.Controllers
                 {
                     Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
                     RetrievedPlayer.HandsPlayed++;
+                    thisPlayer.Money -= (thisPlayer.CurrHand.BetValue * 2);
                     RetrievedPlayer.Money -= (thisPlayer.CurrHand.BetValue * 2);
                     dbContext.SaveChanges();
                     HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
@@ -356,6 +359,7 @@ namespace csharp_project.Controllers
             //If the player's cards add up to more than 21, then the player busts and they lose their bet
             if (thisPlayer.CurrHand.HandValue > 21)
             {
+                thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
                 RetrievedPlayer.Money -= thisPlayer.CurrHand.BetValue;
                 HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
             }
@@ -363,6 +367,7 @@ namespace csharp_project.Controllers
             else if (thisPlayer.CurrHand.HandValue <= 21 && dealerHand.HandValue > 21)
             {
                 RetrievedPlayer.HandsWon++;
+                thisPlayer.Money += thisPlayer.CurrHand.BetValue;
                 RetrievedPlayer.Money += thisPlayer.CurrHand.BetValue;
                 HttpContext.Session.SetString("message", "You beat the dealer, as they have busted!");
             }
@@ -370,6 +375,7 @@ namespace csharp_project.Controllers
             else if (thisPlayer.CurrHand.HandValue > dealerHand.HandValue)
             {
                 RetrievedPlayer.HandsWon++;
+                thisPlayer.Money += thisPlayer.CurrHand.BetValue;
                 RetrievedPlayer.Money += thisPlayer.CurrHand.BetValue;
                 HttpContext.Session.SetString("message", "You beat the dealer!");
             }
@@ -382,6 +388,7 @@ namespace csharp_project.Controllers
             //If neither busts, and the player's cards are less than the dealer's cards, then the dealer wins
             else if (thisPlayer.CurrHand.HandValue < dealerHand.HandValue)
             {
+                thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
                 RetrievedPlayer.Money -= thisPlayer.CurrHand.BetValue;
                 HttpContext.Session.SetString("message", "Sorry, dealer wins and you lose your bet!");
             }

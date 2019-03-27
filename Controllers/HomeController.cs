@@ -134,7 +134,9 @@ namespace csharp_project.Controllers
                 HttpContext.Session.SetInt32("CurrBetAmnt", 0);
             }
 
-            if (thisPlayer.Money >= HttpContext.Session.GetInt32("CurrBetAmnt"))
+            HttpContext.Session.Remove("message");  //Clear out session message
+            
+            if (thisPlayer.Money >= HttpContext.Session.GetInt32("CurrBetAmnt")+amnt)
             {
                 if (HttpContext.Session.GetInt32("CurrBetAmnt")+amnt <= 100)
                 {
@@ -178,6 +180,8 @@ namespace csharp_project.Controllers
             thisPlayer.CurrHand.PlayerCards.Add(thisDeck.Deal());   //Deal the Player's second card
             dealerHand.PlayerCards.Add(thisDeck.Deal());    //Deal the Dealer's second card
 
+            HttpContext.Session.Remove("message");  //Clear out session message
+            
             //Check if player has BlackJack
             //If the players' cards add up to 21 and they only have 2 cards, then they win with a BlackJack
             if (thisPlayer.CurrHand.HandValue == 21 && thisPlayer.CurrHand.PlayerCards.Count == 2)
@@ -191,24 +195,74 @@ namespace csharp_project.Controllers
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return RedirectToAction("Dashboard");
         }
-//Stand
-        [HttpGet("stand")]
-        public IActionResult Stand()
+//DealerLogic
+        [HttpGet("DealerLogic")]
+        public IActionResult DealerLogic()
         {
+            Deck thisDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
+            Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+
+            dealerHand.CalculateHandValue();
+
+            while (dealerHand.HandValue < 17)
+            {
+                dealerHand.PlayerCards.Add(thisDeck.Deal());
+                dealerHand.CalculateHandValue();
+            }
+
+            HttpContext.Session.SetObjectAsJson("CurrentDeck", thisDeck);
+            HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+            return RedirectToAction("DetermineWinner");
+        }
+//DetermineWinner
+        [HttpGet("DetermineWinner")]
+        public IActionResult DetermineWinner()
+        {
+            HttpContext.Session.Remove("message");  //Clear out session message
+
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+            Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+
+            //Calculate the values of both hands; just for good measure
             thisPlayer.CurrHand.CalculateHandValue();
+            dealerHand.CalculateHandValue();
 
             //If the player's cards add up to more than 21, then the player busts and they lose their bet
             if (thisPlayer.CurrHand.HandValue > 21)
             {
-                HttpContext.Session.SetString("message", "Sorry, You Busted!");
+                HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
+            }
+            //If the player's cards add up to 21 or less, and the dealer busts, then the player wins
+            else if (thisPlayer.CurrHand.HandValue <= 21 && dealerHand.HandValue > 21)
+            {
+                HttpContext.Session.SetString("message", "You beat the dealer, as they have busted!");
+            }
+            //If neither busts, and the player's cards are more than the dealer's cards, then the player wins
+            else if (thisPlayer.CurrHand.HandValue > dealerHand.HandValue)
+            {
+                HttpContext.Session.SetString("message", "You beat the dealer!");
+            }
+            //If neither busts, and the player's cards are equal to the dealer's cards, then nobody wins
+            else if (thisPlayer.CurrHand.HandValue == dealerHand.HandValue)
+            {
+                HttpContext.Session.SetString("message", "You tied the dealer, the hand is a push!");
+            }
+            //If neither busts, and the player's cards are less than the dealer's cards, then the dealer wins
+            else if (thisPlayer.CurrHand.HandValue < dealerHand.HandValue)
+            {
+                HttpContext.Session.SetString("message", "Sorry, dealer wins and you lose your bet!");
             }
 
-            //Dealer Logic
-
-            ViewBag.ThisPlayer = thisPlayer;
-            HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+            HttpContext.Session.SetObjectAsJson("thisPlayer", thisPlayer);
+            HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             return RedirectToAction("Dashboard");
+        }
+//Logout
+        [HttpGet("logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index");
         }
     }
 

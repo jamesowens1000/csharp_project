@@ -24,12 +24,6 @@ namespace csharp_project.Controllers
         [HttpGet("")]
         public IActionResult Index()
         {
-            // Deck newDeck = new Deck();
-            // newDeck.Shuffle();
-            // Card FirstCard = newDeck.Deal();
-            // Card SecondCard = newDeck.Deal();
-            // ViewBag.FirstCard = FirstCard.Suit+"_"+FirstCard.Face+".png";
-            // ViewBag.SecondCard = SecondCard.Suit+"_"+SecondCard.Face+".png";
             return View();
         }
 //Register
@@ -98,9 +92,6 @@ namespace csharp_project.Controllers
                 return RedirectToAction("Index");
             }
 
-            Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
-            ViewBag.ThisPlayer = thisPlayer;
-
             //If the Dealer does not have a Hand in session, then create one
             if (HttpContext.Session.GetObjectFromJson<Hand>("DealerHand") == null)
             {
@@ -112,14 +103,29 @@ namespace csharp_project.Controllers
             if (HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck") == null)
             {
                 Deck currDeck = new Deck();
-                currDeck.Shuffle(3);
+                // currDeck.Shuffle(3);
                 HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
             }
             ViewBag.CurrentDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
 
             ViewBag.Message = HttpContext.Session.GetString("message");
 
-            HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+
+            Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+            ViewBag.ThisPlayer = thisPlayer;
+            if(thisPlayer.CurrHand != null)
+            {
+                List<string> PlayerCards = new List<string>();
+                foreach (var card in thisPlayer.CurrHand.PlayerCards)
+                {
+                PlayerCards.Add(card.Suit+"_"+card.Face+".png");
+                }
+                ViewBag.PlayerCards = PlayerCards;
+            }
+            Hand DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+
+
+            // HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return View("Dashboard");
         }
 
@@ -168,6 +174,9 @@ namespace csharp_project.Controllers
             Deck thisDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
             Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
 
+            //Shuffle Deck three times;
+            thisDeck.Shuffle(3);
+
             //Instantiate a List of Cards for both the Player and the Dealer
             thisPlayer.CurrHand.PlayerCards = new List<Card>();
             dealerHand.PlayerCards = new List<Card>();
@@ -189,6 +198,7 @@ namespace csharp_project.Controllers
             HttpContext.Session.SetObjectAsJson("CurrentDeck", thisDeck);
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+
             return RedirectToAction("Dashboard");
         }
 //Stand

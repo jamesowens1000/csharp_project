@@ -10,6 +10,7 @@
 .Dealer{
     position: relative;
     top: 15vh;
+    align-self: center;
 }
 .Player{
     position: relative;
@@ -20,5 +21,10 @@
     position: relative;
     top: 83vh;
     left: 20vw;
+}
+.option {
+    position: relative;
+    top: 85vh;
+    left: 25vw;
 }
 

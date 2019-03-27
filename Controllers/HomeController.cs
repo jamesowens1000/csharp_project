@@ -254,6 +254,8 @@ namespace csharp_project.Controllers
             thisPlayer.CurrHand.CalculateHandValue();
             dealerHand.CalculateHandValue();
 
+            thisPlayer.HandsPlayed += 1;
+
             //If the player's cards add up to more than 21, then the player busts and they lose their bet
             if (thisPlayer.CurrHand.HandValue > 21)
             {

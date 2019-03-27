@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -20,15 +20,15 @@ namespace csharp_project.Controllers
         {
             dbContext = context;
         }
-        
-        //Index
+
+//Index
         [HttpGet("")]
         public IActionResult Index()
         {
             return View();
         }
-        
-        //Register
+
+//Register
         [HttpPost("register")]
         public IActionResult TryRegister(IndexViewModel modelData)
         {
@@ -56,7 +56,7 @@ namespace csharp_project.Controllers
             return View("Index", modelData);
         }
         
-        //Login
+//Login
         [HttpPost("login")]
         public IActionResult TryLogin(IndexViewModel modelData)
         {
@@ -87,8 +87,8 @@ namespace csharp_project.Controllers
             }
             return View("Index", modelData);
         }
-        
-        //DashBoard
+
+//DashBoard
         [HttpGet("Dashboard")]
         public IActionResult Dashboard()
         {
@@ -109,6 +109,7 @@ namespace csharp_project.Controllers
 
             string stand = HttpContext.Session.GetString("Stand");
             ViewBag.Stand = stand;
+            ViewBag.EndGame = HttpContext.Session.GetString("Endgame");
 
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
             ViewBag.ThisPlayer = thisPlayer;
@@ -136,7 +137,7 @@ namespace csharp_project.Controllers
             return View("Dashboard");
         }
 
-        //AddBetAmount
+//AddBetAmount
         [HttpGet("bet/{amnt}")]
         public IActionResult AddBetAmount(int amnt)
         {
@@ -171,7 +172,7 @@ namespace csharp_project.Controllers
             return RedirectToAction("Dashboard");
         }
 
-        //SubmitBet
+//SubmitBet
         [HttpGet("submitBet")]
         public IActionResult SubmitBet()
         {
@@ -226,7 +227,7 @@ namespace csharp_project.Controllers
             return RedirectToAction("Dashboard");
         }
         
-        //Hit
+//Hit
         [HttpGet("hit")]
         public IActionResult Hit()
         {
@@ -256,8 +257,8 @@ namespace csharp_project.Controllers
 
             return RedirectToAction("Dashboard");
         }
-        
-        //Double
+
+//Double
         [HttpGet("double")]
         public IActionResult Double()
         {
@@ -281,7 +282,10 @@ namespace csharp_project.Controllers
                     HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
                     return RedirectToAction("Dashboard");
                 }
-                return RedirectToAction("DetermineWinner");
+                HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
+                HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+                HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+                return RedirectToAction("DealerLogic");
             }
             else
             {
@@ -293,7 +297,7 @@ namespace csharp_project.Controllers
             return RedirectToAction("Dashboard");
         }
         
-        //DealerLogic
+ //DealerLogic
         [HttpGet("DealerLogic")]
         public IActionResult DealerLogic()
         {
@@ -316,7 +320,7 @@ namespace csharp_project.Controllers
             return RedirectToAction("DetermineWinner");
         }
         
-        //DetermineWinner
+ //DetermineWinner
         [HttpGet("DetermineWinner")]
         public IActionResult DetermineWinner()
         {
@@ -379,21 +383,23 @@ namespace csharp_project.Controllers
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             return RedirectToAction("Dashboard");
         }
-        
-        //Endgame
+
+//EndGame
         [HttpGet("endgame")]
         public IActionResult Endgame()
         {
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
             HttpContext.Session.Remove("CurrentDeck");
             HttpContext.Session.Remove("DealerHand");
+            HttpContext.Session.Remove("Stand");
             thisPlayer.CurrHand = null;
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
 
+
             return RedirectToAction("Dashboard");
         }
-        
-        //Logout
+
+//Logout
         [HttpGet("logout")]
         public IActionResult Logout()
         {

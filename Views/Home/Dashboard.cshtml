@@ -18,14 +18,25 @@
         }
         @if(@ViewBag.ThisPlayer.CurrHand != null)
         {
-            <table class="option">
-                <tr>
-                    <td ALIGN=CENTER><a href="/hit"><button type="button" class="btn-lg btn-success">Hit</button></a></td>
-                    <td ALIGN=CENTER><a href="/DealerLogic"><button type="button" class="btn-lg btn-success">Stand</button></a></td>
-                    <td ALIGN=CENTER><a href="/double"><button type="button" class="btn-lg btn-success">Double</button></a></td>
-                    <td ALIGN=CENTER><a href="/split"><button type="button" class="btn-lg btn-success">Split</button></a></td> 
-                </tr>
-            </table>
+            @if(ViewBag.EndGame == "true")
+            {
+                <table class="restart">
+                    <tr>
+                        <td ALIGN=CENTER><a href="/endgame"><button type="button" class="btn-lg btn-success">Play Again</button></a></td>
+                    </tr>
+                </table>
+            } 
+            else
+            {
+                <table class="option">
+                    <tr>
+                        <td ALIGN=CENTER><a href="/hit"><button type="button" class="btn-lg btn-success">Hit</button></a></td>
+                        <td ALIGN=CENTER><a href="/DealerLogic"><button type="button" class="btn-lg btn-success">Stand</button></a></td>
+                        <td ALIGN=CENTER><a href="/double"><button type="button" class="btn-lg btn-success">Double</button></a></td>
+                        <td ALIGN=CENTER><a href="/split"><button type="button" class="btn-lg btn-success">Split</button></a></td> 
+                    </tr>
+                </table>
+            }
         }
     
     </div>

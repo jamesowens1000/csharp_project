@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -107,8 +107,11 @@ namespace csharp_project.Controllers
 
             ViewBag.Message = HttpContext.Session.GetString("message");
 
-            string stand = HttpContext.Session.GetString("Stand");
-            ViewBag.Stand = stand;
+            ViewBag.Stand = HttpContext.Session.GetString("Stand");
+
+            ViewBag.BetAmount = HttpContext.Session.GetInt32("CurrBetAmnt");
+            Console.WriteLine(HttpContext.Session.GetInt32("CurrBetAmnt"));
+
             ViewBag.EndGame = HttpContext.Session.GetString("Endgame");
 
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");

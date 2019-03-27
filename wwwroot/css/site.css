@@ -26,17 +26,28 @@
 .Chip {
     position: relative;
     top: 83vh;
-    left: 20vw;
+    left: 0vw;
 }
 .option {
     position: relative;
     top: 85vh;
-    left: 25vw;
+    left: 4vw;
 }
 .restart{
     position: relative;
     top: 85vh;
-    left: 30vw;
+    left: 9vw;
+}
+.money{
+    position: fixed;
+    top: 88.5vh;
+    left: 77vw;
+    color: rgb(212, 200, 183);
+}
+.logout{
+    position: relative;
+    top: 3vh;
+    right: 18vw;
 }
 
 

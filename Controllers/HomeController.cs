@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -101,6 +101,8 @@ namespace csharp_project.Controllers
 
             ViewBag.Message = HttpContext.Session.GetString("message");
 
+            string stand = HttpContext.Session.GetString("Stand");
+            ViewBag.Stand = stand;
 
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
             ViewBag.ThisPlayer = thisPlayer;
@@ -109,13 +111,21 @@ namespace csharp_project.Controllers
                 List<string> PlayerCards = new List<string>();
                 foreach (var card in thisPlayer.CurrHand.PlayerCards)
                 {
-                PlayerCards.Add(card.Suit+"_"+card.Face+".png");
+                    PlayerCards.Add(card.Suit+"_"+card.Face+".png");
                 }
                 ViewBag.PlayerCards = PlayerCards;
             }
             Hand DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
-
-
+            if(DealerHand.PlayerCards != null)
+            {
+                List<string> DealerCards = new List<string>();
+                foreach (var dCard in DealerHand.PlayerCards)
+                {
+                    DealerCards.Add(dCard.Suit+"_"+dCard.Face+".png");
+                    Console.WriteLine("Dealer has "+dCard.Face+" of "+dCard.Suit);
+                }
+                ViewBag.DealerCards = DealerCards;
+            }
             // HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return View("Dashboard");
         }
@@ -221,6 +231,8 @@ namespace csharp_project.Controllers
                 dealerHand.PlayerCards.Add(thisDeck.Deal());
                 dealerHand.CalculateHandValue();
             }
+            
+            HttpContext.Session.SetString("Stand", "true");
 
             HttpContext.Session.SetObjectAsJson("CurrentDeck", thisDeck);
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
@@ -269,7 +281,7 @@ namespace csharp_project.Controllers
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             return RedirectToAction("Dashboard");
         }
-        //hit
+//hit
         [HttpGet("hit")]
         public IActionResult Hit()
         {
@@ -291,6 +303,7 @@ namespace csharp_project.Controllers
 
             return RedirectToAction("Dashboard");
         }
+//Double
         [HttpGet("double")]
         public IActionResult Double()
         {
@@ -310,6 +323,7 @@ namespace csharp_project.Controllers
                 HttpContext.Session.SetString("message", "You don't have enough to double!");
             }
 
+            HttpContext.Session.SetString("Stand", "true");
             HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);

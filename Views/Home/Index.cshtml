@@ -1,7 +1,9 @@
 ﻿@model IndexViewModel
 <div class="container">
     <div class="row">
-        <div class ="col-3">
+        <div class ="col">
+        </div>
+        <div class ="col">
             <h1>Registration</h1>
             <form asp-action="TryRegister" asp-controller="Home" method="post">
                 <div class="form-group">
@@ -22,9 +24,9 @@
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </form>
         </div>
-        <div class ="col-2">
+        <div class="col">
         </div>
-        <div class ="col-3">
+        <div class ="col">
             <h1>Login</h1>
             <form asp-action="TryLogin" asp-controller="Home" method="post">
                 <div class="form-group">
@@ -39,7 +41,9 @@
                 </div>
                 <button type="submit" class="btn btn-success">Login</button>
             </form>
-            <!-- <partial name="Login.cshtml" /> -->
+        </div>
+        <div class ="col">
+            
         </div>
     </div>
 </div>

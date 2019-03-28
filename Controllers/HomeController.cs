@@ -104,7 +104,8 @@ namespace csharp_project.Controllers
             {
                 HttpContext.Session.SetObjectAsJson("DealerHand", new Hand());
             }
-            ViewBag.DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            Hand DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            ViewBag.DealerHand = DealerHand;
 
             ViewBag.Message = HttpContext.Session.GetString("message");
 
@@ -122,7 +123,6 @@ namespace csharp_project.Controllers
             double WinRatio = (double)RetrievedPlayer.HandsWon/RetrievedPlayer.HandsPlayed;
             string sWinRate = WinRatio.ToString("P", CultureInfo.InvariantCulture);
             ViewBag.WinRatio = sWinRate;
-            Console.WriteLine(RetrievedPlayer.HandsWon/RetrievedPlayer.HandsPlayed);
 
             if (thisPlayer.CurrHand != null)
             {
@@ -132,8 +132,9 @@ namespace csharp_project.Controllers
                     PlayerCards.Add(card.Suit + "_" + card.Face + ".png");
                 }
                 ViewBag.PlayerCards = PlayerCards;
+                ViewBag.PlayerHandValue = thisPlayer.CurrHand.HandValue;
             }
-            Hand DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+
             if (DealerHand.PlayerCards != null)
             {
                 List<string> DealerCards = new List<string>();
@@ -143,6 +144,7 @@ namespace csharp_project.Controllers
                     Console.WriteLine("Dealer has " + dCard.Face + " of " + dCard.Suit);
                 }
                 ViewBag.DealerCards = DealerCards;
+                ViewBag.DealerHandValue = DealerHand.HandValue;
             }
             // HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return View("Dashboard");

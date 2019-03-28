@@ -9,6 +9,12 @@ namespace csharp_project.Models
         public int HandValue {get;set;}
         public int BetValue {get;set;}
 
+        //Hand Constructor
+        public Hand()
+        {
+            HandValue = 0;
+            BetValue = 0;
+        }
         public bool CalculateHandValue()
         {
             HandValue = 0;

@@ -5,19 +5,20 @@
                 <a href="logout"><button type="button" class="btn btn-success">Logout</button></a>
             </div>
             <div class="bet">
-                <h4>Max Bet: 100</h4>
-                <h6>Your Bet: @ViewBag.BetAmount</h6>
-                <h6>Winning Ratio: @ViewBag.WinRatio</h6>
+                <h6>Max Bet: 100</h6>
+                Your Bet: @ViewBag.BetAmount
+                <br>
+                Winning Ratio: @ViewBag.WinRatio
             </div>
             @if(@ViewBag.ThisPlayer.CurrHand == null)
             {
                 <table class="Chip">
                     <tr>
-                        <td ALIGN=CENTER><a href="/bet/5"><img src="images/Chip_5.png" alt="5 dollar" height="80" width="80"></a></td>
-                        <td ALIGN=CENTER><a href="/bet/10"><img src="images/Chip_10.png" alt="5 dollar" height="80" width="80"></a></td>
-                        <td ALIGN=CENTER><a href="/bet/25"><img src="images/Chip_25.png" alt="5 dollar" height="80" width="80"></a></td>
-                        <td ALIGN=CENTER><a href="/bet/50"><img src="images/Chip_50.png" alt="5 dollar" height="80" width="80"></a></td>
-                        <td ALIGN=CENTER><a href="/bet/100"><img src="images/Chip_100.png" alt="5 dollar" height="80" width="80"></a></td>
+                        <td ALIGN=CENTER><a href="/bet/5"><img src="images/Chip_5.png" alt="5 dollar" height="55" width="55"></a></td>
+                        <td ALIGN=CENTER><a href="/bet/10"><img src="images/Chip_10.png" alt="5 dollar" height="55" width="55"></a></td>
+                        <td ALIGN=CENTER><a href="/bet/25"><img src="images/Chip_25.png" alt="5 dollar" height="55" width="55"></a></td>
+                        <td ALIGN=CENTER><a href="/bet/50"><img src="images/Chip_50.png" alt="5 dollar" height="55" width="55"></a></td>
+                        <td ALIGN=CENTER><a href="/bet/100"><img src="images/Chip_100.png" alt="5 dollar" height="55" width="55"></a></td>
                         @if(ViewBag.BetAmount > 0)
                         {
                             <td>
@@ -41,16 +42,14 @@
                 {
                     <table class="option">
                         <tr>
-                            <td ALIGN=CENTER><a href="/hit"><button type="button" class="btn-lg btn-success">Hit</button></a></td>
-                            <td ALIGN=CENTER><a href="/StandCurrHand"><button type="button" class="btn-lg btn-success">Stand</button></a></td>
-                            <td ALIGN=CENTER><a href="/double"><button type="button" class="btn-lg btn-success">Double</button></a></td>
-                            <td ALIGN=CENTER><a href="/split"><button type="button" class="btn-lg btn-success">Split</button></a></td> 
+                           <td ALIGN=CENTER><a href="/hit"><button type="button" class="btn btn-danger">Hit</button></a></td>
+                            <td ALIGN=CENTER><a href="/StandCurrHand"><button type="button" class="btn btn-success">Stand</button></a></td>                  
                             @if(ViewBag.ThisPlayer.CurrHand.PlayerCards.Count == 2)
                             {
-                                <td ALIGN=CENTER><a href="/double"><button type="button" class="btn-lg btn-success">Double</button></a></td>
+                                <td ALIGN=CENTER><a href="/double"><button type="button" class="btn btn-primary">Double</button></a></td>
                                 @if(ViewBag.ThisPlayer.CurrHand.PlayerCards[0].Face == ViewBag.ThisPlayer.CurrHand.PlayerCards[1].Face)
                                 {
-                                    <td ALIGN=CENTER><a href="/split"><button type="button" class="btn-lg btn-success">Split</button></a></td> 
+                                    <td ALIGN=CENTER><a href="/split"><button type="button" class="btn btn-secondary">Split</button></a></td> 
                                 }
                             }
                         </tr>
@@ -66,22 +65,28 @@
                 { 
                     <table class="Dealer">
                         <tr>
+                            <div class=DealerHandValue>
+                                @if(ViewBag.Stand != null)
+                                {
+                                    <p ALIGN=CENTER>Dealer Hand Value: @ViewBag.DealerHandValue</p>
+                                }
+                            </div>
                             @for(var i=0; i<@ViewBag.DealerCards.Count; i++)
                             {
                                 @if(i == 0)
                                 {
                                     @if(@ViewBag.Stand == null)
                                     {
-                                        <td ALIGN=CENTER><IMG SRC="images/dealer.png"></TD>
+                                        <td ALIGN=CENTER><IMG SRC="images/dealer.png" height=80% width=80%></TD>
                                     } 
                                     else 
                                     {
-                                        <td ALIGN=CENTER><IMG SRC="images/@ViewBag.DealerCards[i]"></TD>
+                                        <td ALIGN=CENTER><IMG SRC="images/@ViewBag.DealerCards[i]" height=80% width=80%></TD>
                                     }
                                 }
                                 else
                                 {
-                                    <td ALIGN=CENTER><IMG SRC="images/@ViewBag.DealerCards[i]"></TD>
+                                    <td ALIGN=CENTER><IMG SRC="images/@ViewBag.DealerCards[i]" height=80% width=80%></TD>
                                 }
                             }
                         </tr>
@@ -89,17 +94,20 @@
                     <div class="Message">
                         @if(@ViewBag.Message!=null)
                         {
-                            <h6>@ViewBag.Message</h6>
+                            <h4>@ViewBag.Message</h4>
                         }
                     </div>
                     <table class="Player">
                         <tr>
                             @foreach(var card in @ViewBag.PlayerCards)
                             {
-                                <td ALIGN=CENTER><IMG SRC="images/@card"></TD>
+                                <td ALIGN=CENTER><IMG SRC="images/@card" height=80% width=80%></TD>
                             }
                         </tr>
                     </table>
+                    <div class="PlayerHandValue">
+                        <p ALIGN=CENTER>Player Hand Value: @ViewBag.PlayerHandValue</p>
+                    </div>
                 }
             }
         </div>
@@ -109,7 +117,7 @@
     </div>
     <div class="row">
         <div class="money">
-                <h1>@ViewBag.ThisPlayer.Money</h1>
+                <h2>@ViewBag.ThisPlayer.Money</h2>
         </div>
     </div>
 </div>

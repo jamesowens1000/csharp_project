@@ -119,10 +119,17 @@ namespace csharp_project.Controllers
 
             Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
 
-            double WinRatio = (double)RetrievedPlayer.HandsWon/RetrievedPlayer.HandsPlayed;
+            double WinRatio;
+            if (RetrievedPlayer.HandsPlayed < 1)
+            {
+                WinRatio = 0;
+            }
+            else
+            {
+                WinRatio = (double)RetrievedPlayer.HandsWon/RetrievedPlayer.HandsPlayed;
+            }
             string sWinRate = WinRatio.ToString("P", CultureInfo.InvariantCulture);
             ViewBag.WinRatio = sWinRate;
-            Console.WriteLine(RetrievedPlayer.HandsWon/RetrievedPlayer.HandsPlayed);
 
             if (thisPlayer.CurrHand != null)
             {
@@ -295,6 +302,7 @@ namespace csharp_project.Controllers
                 thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
                 Console.WriteLine("Money Remaining: " + thisPlayer.Money);
                 thisPlayer.CurrHand.BetValue = thisPlayer.CurrHand.BetValue * 2;
+                HttpContext.Session.SetInt32("CurrBetAmnt", thisPlayer.CurrHand.BetValue);
                 thisPlayer.CurrHand.PlayerCards.Add(currDeck.Deal());
                 thisPlayer.CurrHand.CalculateHandValue();
                 if (thisPlayer.CurrHand.HandValue > 21)

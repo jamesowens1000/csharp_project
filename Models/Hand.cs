@@ -15,6 +15,7 @@ namespace csharp_project.Models
             HandValue = 0;
             BetValue = 0;
         }
+
         public bool CalculateHandValue()
         {
             HandValue = 0;

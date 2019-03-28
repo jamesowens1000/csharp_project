@@ -7,6 +7,7 @@
     background-position-y: 106%;
     overflow:hidden;
 }
+
 #Home-bg{
     width:100vw;
     height:100vh;
@@ -24,74 +25,48 @@
 }
 .Dealer{
     position: relative;
-    top: 11vh;
+    top: 15vh;
     margin: 0px auto;
 }
 .Player{
     position: relative;
-    top: 22vh;
+    top: 29vh;
     margin: 0px auto;
 }
 .Message{
     position: relative;
-    top: 18vh;
+    top: 22vh;
     text-align:center;
     color: black;
     font-family: 'Lobster', cursive;
 }
 .Chip {
     position: relative;
-    top: 68vh;
-    left: 21vw;
-    font-family: 'Lobster', cursive;
+    top: 83vh;
+    left: 0vw;
 }
 .option {
     position: relative;
-    top: 69.5vh;
-    left: 25vw;
-    font-family: 'Lobster', cursive;
+    top: 85vh;
+    left: 4vw;
 }
 .restart{
     position: relative;
-    top: 69vh;
-    left: 29vw;
-    font-family: 'Lobster', cursive;
+    top: 85vh;
+    left: 9vw;
 }
 .money{
     position: fixed;
-    top: 88vh;
+    top: 88.5vh;
     left: 77vw;
     color: rgb(212, 200, 183);
-    font-family: 'Lobster', cursive;
 }
 .logout{
     position: relative;
     top: 3vh;
-    right: 4vw;
-    font-family: 'Lobster', cursive;
+    right: 18vw;
 }
-.bet{
-    position: relative;
-    top: 78.5vh;
-    left: 6.5vw;
-    font-family: 'Lobster', cursive;
-}
-.DealerHandValue
-{
-    position: relative;
-    top: 11vh;
-    margin: 0px auto;
-    color: white;
-    font-family: 'Lobster', cursive;
-}
-.PlayerHandValue
-{
-    position: relative;
-    top: 37.5vh;
-    margin: 0px auto;
-    color: white;
-    font-family: 'Lobster', cursive;
-}
+
 
 /* Leaderboard Styling */
 .lb-title{
@@ -123,3 +98,4 @@
     font-weight: bold;
     cursor: default;
 }
+

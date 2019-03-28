@@ -446,6 +446,15 @@ namespace csharp_project.Controllers
             return RedirectToAction("Dashboard");
         }
 
+        //Leaderboard
+        [HttpGet("leaderboard")]
+        public IActionResult Leaderboard()
+        {
+            List<Player> AllPlayers = dbContext.Players.ToList();
+            ViewBag.AllPlayers = AllPlayers;
+            return View("Leaderboard");
+        }
+
         //Logout
         [HttpGet("logout")]
         public IActionResult Logout()

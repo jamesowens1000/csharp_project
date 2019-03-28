@@ -7,6 +7,15 @@
     background-position-y: 106%;
     overflow:hidden;
 }
+#Home-bg{
+    width:100vw;
+    height:100vh;
+    background: url(../images/Black-Jack.jpg); 
+    /* background-repeat: no-repeat; */
+    background-size: cover;
+    background-position-y: 106%;
+    overflow:hidden;
+}
 .Frontpage{
     position: relative;
     top: 8vh;
@@ -23,41 +32,56 @@
     margin: 0px auto;
 }
 .Message{
+    font-family: 'Germania One';
     position: relative;
     top: 18vh;
     text-align:center;
-    color: Black;
+    color: black;
 }
 .Chip {
     position: relative;
     top: 68vh;
     left: 21vw;
+    font-family: 'Lobster', cursive;
 }
 .option {
     position: relative;
     top: 69.5vh;
     left: 25vw;
+    font-family: 'Lobster', cursive;
 }
 .restart{
     position: relative;
     top: 69vh;
     left: 29vw;
+    font-family: 'Lobster', cursive;
 }
 .money{
     position: fixed;
     top: 88vh;
-    left: 76vw;
+    left: 77vw;
     color: rgb(212, 200, 183);
+    font-family: 'Lobster', cursive;
 }
 .logout{
     position: relative;
     top: 3vh;
     right: 4vw;
+    font-family: 'Lobster', cursive;
 }
 .bet{
     position: relative;
     top: 78.5vh;
     left: 6.5vw;
+    font-family: 'Lobster', cursive;
+}
+.DealerHandValue
+{
+    position: relative;
+    top: 11vh;
+    margin: 0px auto;
+    color: white;
+    font-family: 'Lobster', cursive;
 }
 .PlayerHandValue
 {
@@ -65,13 +89,7 @@
     top: 37.5vh;
     margin: 0px auto;
     color: white;
-}
-.DealerHandValue
-{
-    position: relative;
-    top: 12vh;
-    margin: 0px auto;
-    color: white;
+    font-family: 'Lobster', cursive;
 }
 
 /* Leaderboard Styling */

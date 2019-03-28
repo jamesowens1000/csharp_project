@@ -108,15 +108,11 @@
                     <div class="Message">
                         @if(@ViewBag.Message!=null)
                         {
-<<<<<<< HEAD
                             <h6>@ViewBag.Message</h6>
                             @if(@ViewBag.Message!=null)
                             {
                             <h6>@ViewBag.MessageSplit</h6>
                             }
-=======
-                            <h4>@ViewBag.Message</h4>
->>>>>>> 75adbdd34a2f921130b1a8cd9fedd417c68def3f
                         }
                     </div>
                     <table class="Player">
@@ -131,7 +127,7 @@
                         <tr>
                             @foreach(var card in @ViewBag.SplitCards)
                             {
-                                <td ALIGN=CENTER><IMG SRC="images/@card"></TD>
+                                <td ALIGN=CENTER><IMG SRC="images/@card" height=80% width=80%></TD>
                             }
                         </tr>
                         }

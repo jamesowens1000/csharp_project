@@ -148,7 +148,6 @@ namespace csharp_project.Controllers
                 ViewBag.PlayerCards = PlayerCards;
                 ViewBag.PlayerHandValue = thisPlayer.CurrHand.HandValue;
             }
-<<<<<<< HEAD
             if (thisPlayer.SplitHand != null)
             {
                 List<string> PlayerCards = new List<string>();
@@ -158,10 +157,6 @@ namespace csharp_project.Controllers
                 }
                 ViewBag.SplitCards = PlayerCards;
             }
-            Hand DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
-=======
-
->>>>>>> 75adbdd34a2f921130b1a8cd9fedd417c68def3f
             if (DealerHand.PlayerCards != null)
             {
                 List<string> DealerCards = new List<string>();
@@ -519,6 +514,7 @@ namespace csharp_project.Controllers
         public IActionResult DetermineWinner()
         {
             HttpContext.Session.Remove("message");  //Clear out session message
+            HttpContext.Session.Remove("messagesplit");  //Clear out session message
 
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
             Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);

@@ -7,52 +7,71 @@
     background-position-y: 106%;
     overflow:hidden;
 }
-
+.Frontpage{
+    position: relative;
+    top: 8vh;
+    margin: 0px auto;
+}
 .Dealer{
     position: relative;
-    top: 15vh;
+    top: 11vh;
     margin: 0px auto;
 }
 .Player{
     position: relative;
-    top: 29vh;
+    top: 22vh;
     margin: 0px auto;
 }
 .Message{
     position: relative;
-    top: 22vh;
+    top: 18vh;
     text-align:center;
+    color: Black;
 }
 .Chip {
     position: relative;
-    top: 74vh;
-    left: 7vw;
+    top: 68vh;
+    left: 21vw;
 }
 .option {
     position: relative;
-    top: 76vh;
-    left: 8vw;
+    top: 69.5vh;
+    left: 25vw;
 }
 .restart{
     position: relative;
-    top: 75vh;
-    left: 12vw;
+    top: 69vh;
+    left: 29vw;
 }
 .money{
     position: fixed;
-    top: 88.5vh;
-    left: 77vw;
+    top: 88vh;
+    left: 76vw;
     color: rgb(212, 200, 183);
 }
 .logout{
     position: relative;
     top: 3vh;
-    right: 18vw;
+    right: 4vw;
 }
 .bet{
     position: relative;
-    top: 83vh;
-    right: 7vw;
+    top: 78.5vh;
+    left: 6.5vw;
+}
+.PlayerHandValue
+{
+    position: relative;
+    top: 37.5vh;
+    margin: 0px auto;
+    color: white;
+}
+.DealerHandValue
+{
+    position: relative;
+    top: 12vh;
+    margin: 0px auto;
+    color: white;
 }
 
 /* Leaderboard Styling */

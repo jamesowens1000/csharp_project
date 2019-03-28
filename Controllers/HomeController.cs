@@ -104,7 +104,8 @@ namespace csharp_project.Controllers
             {
                 HttpContext.Session.SetObjectAsJson("DealerHand", new Hand());
             }
-            ViewBag.DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            Hand DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            ViewBag.DealerHand = DealerHand;
 
             ViewBag.Message = HttpContext.Session.GetString("message");
 
@@ -139,8 +140,9 @@ namespace csharp_project.Controllers
                     PlayerCards.Add(card.Suit + "_" + card.Face + ".png");
                 }
                 ViewBag.PlayerCards = PlayerCards;
+                ViewBag.PlayerHandValue = thisPlayer.CurrHand.HandValue;
             }
-            Hand DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+
             if (DealerHand.PlayerCards != null)
             {
                 List<string> DealerCards = new List<string>();
@@ -150,6 +152,7 @@ namespace csharp_project.Controllers
                     Console.WriteLine("Dealer has " + dCard.Face + " of " + dCard.Suit);
                 }
                 ViewBag.DealerCards = DealerCards;
+                ViewBag.DealerHandValue = DealerHand.HandValue;
             }
             // HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return View("Dashboard");
@@ -195,6 +198,10 @@ namespace csharp_project.Controllers
         public IActionResult SubmitBet()
         {
             HttpContext.Session.SetString("Endgame", "false");
+            // HttpContext.Session.SetString("CurrHand", "false");
+            HttpContext.Session.SetString("SplitHand", "false");
+            HttpContext.Session.SetString("CurrHandStand", "false");
+            HttpContext.Session.SetString("SplitHandStand", "false");
 
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
 
@@ -266,9 +273,8 @@ namespace csharp_project.Controllers
             thisPlayer.CurrHand.CalculateHandValue();
             Console.WriteLine("Current hand value is " + thisPlayer.CurrHand.HandValue);
 
-            if (thisPlayer.CurrHand.HandValue > 21)
+            if ((thisPlayer.CurrHand.HandValue > 21 && HttpContext.Session.GetString("SplitHand") == "false"))
             {
-
                 Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
                 RetrievedPlayer.HandsPlayed++;
                 RetrievedPlayer.Money -= thisPlayer.CurrHand.BetValue;
@@ -278,7 +284,18 @@ namespace csharp_project.Controllers
                 HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
                 HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
                 HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
-
+                return RedirectToAction("Dashboard");
+            }
+            if ((thisPlayer.CurrHand.HandValue > 21 && HttpContext.Session.GetString("SplitHand") == "true"))
+            {
+                Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
+                RetrievedPlayer.HandsPlayed++;
+                RetrievedPlayer.Money -= thisPlayer.CurrHand.BetValue;
+                dbContext.SaveChanges();
+                HttpContext.Session.SetString("CurrHandStand", "true");
+                HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
+                HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+                HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
                 return RedirectToAction("Dashboard");
             }
             HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
@@ -321,7 +338,142 @@ namespace csharp_project.Controllers
                 HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
                 HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
                 HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
-                return RedirectToAction("DealerLogic");
+                return RedirectToAction("StandCurrHand");
+            }
+            else
+            {
+                HttpContext.Session.SetString("message", "You don't have enough to double!");
+            }
+
+            HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+            HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+            return RedirectToAction("StandCurrHand");
+        }
+        //Split
+        [HttpGet("Split")]
+        public IActionResult Split()
+        {
+            Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+            Deck currDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
+            Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            currDeck.Cards.RemoveRange(0, 52);
+            if (thisPlayer.Money - thisPlayer.CurrHand.BetValue >= 0)
+            {
+                thisPlayer.SplitHand = new Hand();
+                thisPlayer.SplitHand.PlayerCards = new List<Card>();
+                HttpContext.Session.SetString("SplitHand", "true");
+                thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
+                Console.WriteLine("Money Remaining: " + thisPlayer.Money);
+                thisPlayer.SplitHand.BetValue = thisPlayer.CurrHand.BetValue;
+
+                Card tempcard = thisPlayer.CurrHand.PlayerCards[1];
+                thisPlayer.CurrHand.PlayerCards.RemoveAt(1);
+
+                thisPlayer.SplitHand.PlayerCards.Add(tempcard);
+                thisPlayer.CurrHand.PlayerCards.Add(currDeck.Deal());
+                thisPlayer.SplitHand.PlayerCards.Add(currDeck.Deal());
+                thisPlayer.CurrHand.CalculateHandValue();
+                thisPlayer.SplitHand.CalculateHandValue();
+                Console.WriteLine("Current hand value is " + thisPlayer.CurrHand.HandValue);
+                Console.WriteLine("Split hand value is " + thisPlayer.SplitHand.HandValue);
+
+                HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
+                HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+                HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+                return RedirectToAction("Dashboard");
+            }
+            else
+            {
+                HttpContext.Session.SetString("message", "You don't have enough to Split!");
+            }
+            HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
+            HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+            HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+            return RedirectToAction("Dashboard");
+        }
+        //StandCurrHand
+        [HttpGet("StandCurrHand")]
+        public IActionResult StandCurrHand()
+        {
+            HttpContext.Session.SetString("CurrHandStand", "true");
+            if (HttpContext.Session.GetString("SplitHand") == "true")
+            {
+                return RedirectToAction("Dashboard");
+            }
+            return RedirectToAction("DealerLogic");
+        }
+        //StandSplitHand
+        [HttpGet("StandSplitHand")]
+        public IActionResult StandSplitHand()
+        {
+            HttpContext.Session.SetString("SplitHandStand", "true");
+            return RedirectToAction("DealerLogic");
+        }
+        //HitSplit
+        [HttpGet("hitsplit")]
+        public IActionResult HitSplit()
+        {
+            Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+            Deck currDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
+            Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            currDeck.Cards.RemoveRange(0, 52);
+
+            thisPlayer.SplitHand.PlayerCards.Add(currDeck.Deal());
+
+            thisPlayer.SplitHand.CalculateHandValue();
+            Console.WriteLine("Split hand value is " + thisPlayer.SplitHand.HandValue);
+
+            if (thisPlayer.SplitHand.HandValue > 21)
+            {
+                Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
+                RetrievedPlayer.HandsPlayed++;
+                RetrievedPlayer.Money -= thisPlayer.SplitHand.BetValue;
+                dbContext.SaveChanges();
+                HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
+                HttpContext.Session.SetString("Endgame", "true");
+                HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
+                HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+                HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+                return RedirectToAction("Dashboard");
+            }
+            HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
+            HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+            HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+            return RedirectToAction("Dashboard");
+        }
+        //DoubleSplit
+        [HttpGet("doublesplit")]
+        public IActionResult DoubleSplit()
+        {
+            Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+            Deck currDeck = HttpContext.Session.GetObjectFromJson<Deck>("CurrentDeck");
+            Hand dealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            currDeck.Cards.RemoveRange(0, 52);
+
+            if (thisPlayer.Money - thisPlayer.SplitHand.BetValue >= 0)
+            {
+                thisPlayer.Money -= thisPlayer.SplitHand.BetValue;
+                Console.WriteLine("Money Remaining: " + thisPlayer.Money);
+                thisPlayer.SplitHand.BetValue = thisPlayer.SplitHand.BetValue * 2;
+                thisPlayer.SplitHand.PlayerCards.Add(currDeck.Deal());
+                thisPlayer.SplitHand.CalculateHandValue();
+                if (thisPlayer.SplitHand.HandValue > 21)
+                {
+                    Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
+                    RetrievedPlayer.HandsPlayed++;
+                    RetrievedPlayer.Money -= (thisPlayer.SplitHand.BetValue * 2);
+                    dbContext.SaveChanges();
+                    HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
+                    HttpContext.Session.SetString("Endgame", "true");
+                    HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
+                    HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+                    HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+                    return RedirectToAction("Dashboard");
+                }
+                HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
+                HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
+                HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+                return RedirectToAction("StandSplitHand");
             }
             else
             {
@@ -332,7 +484,6 @@ namespace csharp_project.Controllers
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
             return RedirectToAction("Dashboard");
         }
-
         //DealerLogic
         [HttpGet("DealerLogic")]
         public IActionResult DealerLogic()
@@ -369,52 +520,100 @@ namespace csharp_project.Controllers
             //Calculate the values of both hands; just for good measure
             thisPlayer.CurrHand.CalculateHandValue();
             dealerHand.CalculateHandValue();
+            if (HttpContext.Session.GetString("CurrHandStand") == "true")
+            {
+                RetrievedPlayer.HandsPlayed++;
 
-            RetrievedPlayer.HandsPlayed++;
+                //If the player's cards add up to more than 21, then the player busts and they lose their bet
+                if (thisPlayer.CurrHand.HandValue > 21)
+                {
+                    // thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
+                    Console.WriteLine("Money Remaining After Loss: " + thisPlayer.Money);
+                    RetrievedPlayer.Money -= thisPlayer.CurrHand.BetValue;
+                    HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
+                }
+                //If the player's cards add up to 21 or less, and the dealer busts, then the player wins
+                else if (thisPlayer.CurrHand.HandValue <= 21 && dealerHand.HandValue > 21)
+                {
+                    RetrievedPlayer.HandsWon++;
+                    thisPlayer.Money += (thisPlayer.CurrHand.BetValue * 2);
+                    Console.WriteLine("Money Remaining After Win: " + thisPlayer.Money);
+                    RetrievedPlayer.Money += thisPlayer.CurrHand.BetValue;
+                    HttpContext.Session.SetString("message", "You beat the dealer, as they have busted!");
+                }
+                //If neither busts, and the player's cards are more than the dealer's cards, then the player wins
+                else if (thisPlayer.CurrHand.HandValue > dealerHand.HandValue)
+                {
+                    RetrievedPlayer.HandsWon++;
+                    thisPlayer.Money += (thisPlayer.CurrHand.BetValue * 2);
+                    Console.WriteLine("Money Remaining After Win: " + thisPlayer.Money);
+                    RetrievedPlayer.Money += thisPlayer.CurrHand.BetValue;
+                    HttpContext.Session.SetString("message", "You beat the dealer!");
+                }
+                //If neither busts, and the player's cards are equal to the dealer's cards, then nobody wins
+                else if (thisPlayer.CurrHand.HandValue == dealerHand.HandValue)
+                {
+                    RetrievedPlayer.HandsPushed++;
+                    thisPlayer.Money += thisPlayer.CurrHand.BetValue;
+                    Console.WriteLine("Money Remaining After Push: " + thisPlayer.Money);
+                    HttpContext.Session.SetString("message", "You tied the dealer, the hand is a push!");
+                }
+                //If neither busts, and the player's cards are less than the dealer's cards, then the dealer wins
+                else if (thisPlayer.CurrHand.HandValue < dealerHand.HandValue)
+                {
+                    // thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
+                    RetrievedPlayer.Money -= thisPlayer.CurrHand.BetValue;
+                    Console.WriteLine("Money Remaining After Loss: " + thisPlayer.Money);
+                    HttpContext.Session.SetString("message", "Sorry, dealer wins and you lose your bet!");
+                }
+            }
+            if (HttpContext.Session.GetString("SplitHandStand") == "true")
+            {
+                RetrievedPlayer.HandsPlayed++;
 
-            //If the player's cards add up to more than 21, then the player busts and they lose their bet
-            if (thisPlayer.CurrHand.HandValue > 21)
-            {
-                // thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
-                Console.WriteLine("Money Remaining After Loss: " + thisPlayer.Money);
-                RetrievedPlayer.Money -= thisPlayer.CurrHand.BetValue;
-                HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
+                //If the player's cards add up to more than 21, then the player busts and they lose their bet
+                if (thisPlayer.SplitHand.HandValue > 21)
+                {
+                    // thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
+                    Console.WriteLine("Money Remaining After Loss: " + thisPlayer.Money);
+                    RetrievedPlayer.Money -= thisPlayer.SplitHand.BetValue;
+                    HttpContext.Session.SetString("message", "Sorry, you busted and you lose your bet!");
+                }
+                //If the player's cards add up to 21 or less, and the dealer busts, then the player wins
+                else if (thisPlayer.SplitHand.HandValue <= 21 && dealerHand.HandValue > 21)
+                {
+                    RetrievedPlayer.HandsWon++;
+                    thisPlayer.Money += (thisPlayer.SplitHand.BetValue * 2);
+                    Console.WriteLine("Money Remaining After Win: " + thisPlayer.Money);
+                    RetrievedPlayer.Money += thisPlayer.SplitHand.BetValue;
+                    HttpContext.Session.SetString("message", "You beat the dealer, as they have busted!");
+                }
+                //If neither busts, and the player's cards are more than the dealer's cards, then the player wins
+                else if (thisPlayer.SplitHand.HandValue > dealerHand.HandValue)
+                {
+                    RetrievedPlayer.HandsWon++;
+                    thisPlayer.Money += (thisPlayer.SplitHand.BetValue * 2);
+                    Console.WriteLine("Money Remaining After Win: " + thisPlayer.Money);
+                    RetrievedPlayer.Money += thisPlayer.SplitHand.BetValue;
+                    HttpContext.Session.SetString("message", "You beat the dealer!");
+                }
+                //If neither busts, and the player's cards are equal to the dealer's cards, then nobody wins
+                else if (thisPlayer.SplitHand.HandValue == dealerHand.HandValue)
+                {
+                    RetrievedPlayer.HandsPushed++;
+                    thisPlayer.Money += thisPlayer.SplitHand.BetValue;
+                    Console.WriteLine("Money Remaining After Push: " + thisPlayer.Money);
+                    HttpContext.Session.SetString("message", "You tied the dealer, the hand is a push!");
+                }
+                //If neither busts, and the player's cards are less than the dealer's cards, then the dealer wins
+                else if (thisPlayer.SplitHand.HandValue < dealerHand.HandValue)
+                {
+                    // thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
+                    RetrievedPlayer.Money -= thisPlayer.SplitHand.BetValue;
+                    Console.WriteLine("Money Remaining After Loss: " + thisPlayer.Money);
+                    HttpContext.Session.SetString("message", "Sorry, dealer wins and you lose your bet!");
+                }
             }
-            //If the player's cards add up to 21 or less, and the dealer busts, then the player wins
-            else if (thisPlayer.CurrHand.HandValue <= 21 && dealerHand.HandValue > 21)
-            {
-                RetrievedPlayer.HandsWon++;
-                thisPlayer.Money += (thisPlayer.CurrHand.BetValue * 2);
-                Console.WriteLine("Money Remaining After Win: " + thisPlayer.Money);
-                RetrievedPlayer.Money += thisPlayer.CurrHand.BetValue;
-                HttpContext.Session.SetString("message", "You beat the dealer, as they have busted!");
-            }
-            //If neither busts, and the player's cards are more than the dealer's cards, then the player wins
-            else if (thisPlayer.CurrHand.HandValue > dealerHand.HandValue)
-            {
-                RetrievedPlayer.HandsWon++;
-                thisPlayer.Money += (thisPlayer.CurrHand.BetValue * 2);
-                Console.WriteLine("Money Remaining After Win: " + thisPlayer.Money);
-                RetrievedPlayer.Money += thisPlayer.CurrHand.BetValue;
-                HttpContext.Session.SetString("message", "You beat the dealer!");
-            }
-            //If neither busts, and the player's cards are equal to the dealer's cards, then nobody wins
-            else if (thisPlayer.CurrHand.HandValue == dealerHand.HandValue)
-            {
-                RetrievedPlayer.HandsPushed++;
-                thisPlayer.Money += thisPlayer.CurrHand.BetValue;
-                Console.WriteLine("Money Remaining After Push: " + thisPlayer.Money);
-                HttpContext.Session.SetString("message", "You tied the dealer, the hand is a push!");
-            }
-            //If neither busts, and the player's cards are less than the dealer's cards, then the dealer wins
-            else if (thisPlayer.CurrHand.HandValue < dealerHand.HandValue)
-            {
-                // thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
-                RetrievedPlayer.Money -= thisPlayer.CurrHand.BetValue;
-                Console.WriteLine("Money Remaining After Loss: " + thisPlayer.Money);
-                HttpContext.Session.SetString("message", "Sorry, dealer wins and you lose your bet!");
-            }
-
             Console.WriteLine("---------------------------------------");
             Console.WriteLine("Player's Hands Won: " + RetrievedPlayer.HandsWon);
             Console.WriteLine("Player's Hands Pushed: " + RetrievedPlayer.HandsPushed);

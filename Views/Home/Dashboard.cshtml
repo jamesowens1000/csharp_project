@@ -32,12 +32,23 @@
                 else
                 {
                     <table class="option">
+                        @if(@ViewBag.CurrHand == "false")
+                        {
                         <tr>
                             <td ALIGN=CENTER><a href="/hit"><button type="button" class="btn-lg btn-success">Hit</button></a></td>
                             <td ALIGN=CENTER><a href="/StandCurrHand"><button type="button" class="btn-lg btn-success">Stand</button></a></td>
                             <td ALIGN=CENTER><a href="/double"><button type="button" class="btn-lg btn-success">Double</button></a></td>
                             <td ALIGN=CENTER><a href="/split"><button type="button" class="btn-lg btn-success">Split</button></a></td> 
                         </tr>
+                        }
+                        @if(@ViewBag.Split == "true" && @ViewBag.CurrHand == "true")
+                        {
+                        <tr>
+                            <td ALIGN=CENTER><a href="/hitsplit"><button type="button" class="btn-lg btn-success">Hit Split</button></a></td>
+                            <td ALIGN=CENTER><a href="/StandSplitHand"><button type="button" class="btn-lg btn-success">Stand Split</button></a></td>
+                            <td ALIGN=CENTER><a href="/doublesplit"><button type="button" class="btn-lg btn-success">Double Split</button></a></td>
+                        </tr>
+                        }
                     </table>
                 }
             }
@@ -74,6 +85,10 @@
                         @if(@ViewBag.Message!=null)
                         {
                             <h6>@ViewBag.Message</h6>
+                            @if(@ViewBag.Message!=null)
+                            {
+                            <h6>@ViewBag.MessageSplit</h6>
+                            }
                         }
                     </div>
                     <table class="Player">
@@ -83,6 +98,15 @@
                                 <td ALIGN=CENTER><IMG SRC="images/@card"></TD>
                             }
                         </tr>
+                        @if(@ViewBag.ThisPlayer.SplitHand != null)
+                        {
+                        <tr>
+                            @foreach(var card in @ViewBag.SplitCards)
+                            {
+                                <td ALIGN=CENTER><IMG SRC="images/@card"></TD>
+                            }
+                        </tr>
+                        }
                     </table>
                 }
             }

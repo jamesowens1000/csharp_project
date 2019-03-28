@@ -9,6 +9,7 @@ using csharp_project.Models;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Globalization;
 
 namespace csharp_project.Controllers
 {
@@ -110,12 +111,19 @@ namespace csharp_project.Controllers
             ViewBag.Stand = HttpContext.Session.GetString("Stand");
 
             ViewBag.BetAmount = HttpContext.Session.GetInt32("CurrBetAmnt");
-            Console.WriteLine(HttpContext.Session.GetInt32("CurrBetAmnt"));
 
             ViewBag.EndGame = HttpContext.Session.GetString("Endgame");
 
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
             ViewBag.ThisPlayer = thisPlayer;
+
+            Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
+
+            double WinRatio = (double)RetrievedPlayer.HandsWon/RetrievedPlayer.HandsPlayed;
+            string sWinRate = WinRatio.ToString("P", CultureInfo.InvariantCulture);
+            ViewBag.WinRatio = sWinRate;
+            Console.WriteLine(RetrievedPlayer.HandsWon/RetrievedPlayer.HandsPlayed);
+
             if (thisPlayer.CurrHand != null)
             {
                 List<string> PlayerCards = new List<string>();

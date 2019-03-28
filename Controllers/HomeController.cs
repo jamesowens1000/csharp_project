@@ -9,6 +9,7 @@ using csharp_project.Models;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Globalization;
 
 namespace csharp_project.Controllers
 {
@@ -103,7 +104,8 @@ namespace csharp_project.Controllers
             {
                 HttpContext.Session.SetObjectAsJson("DealerHand", new Hand());
             }
-            ViewBag.DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            Hand DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+            ViewBag.DealerHand = DealerHand;
 
             ViewBag.Message = HttpContext.Session.GetString("message");
 
@@ -116,12 +118,26 @@ namespace csharp_project.Controllers
             ViewBag.CurrHand = HttpContext.Session.GetString("CurrHandStand");
 
             ViewBag.BetAmount = HttpContext.Session.GetInt32("CurrBetAmnt");
-            Console.WriteLine(HttpContext.Session.GetInt32("CurrBetAmnt"));
 
             ViewBag.EndGame = HttpContext.Session.GetString("Endgame");
 
             Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
             ViewBag.ThisPlayer = thisPlayer;
+
+            Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
+
+            double WinRatio;
+            if (RetrievedPlayer.HandsPlayed < 1)
+            {
+                WinRatio = 0;
+            }
+            else
+            {
+                WinRatio = (double)RetrievedPlayer.HandsWon/RetrievedPlayer.HandsPlayed;
+            }
+            string sWinRate = WinRatio.ToString("P", CultureInfo.InvariantCulture);
+            ViewBag.WinRatio = sWinRate;
+
             if (thisPlayer.CurrHand != null)
             {
                 List<string> PlayerCards = new List<string>();
@@ -130,7 +146,9 @@ namespace csharp_project.Controllers
                     PlayerCards.Add(card.Suit + "_" + card.Face + ".png");
                 }
                 ViewBag.PlayerCards = PlayerCards;
+                ViewBag.PlayerHandValue = thisPlayer.CurrHand.HandValue;
             }
+<<<<<<< HEAD
             if (thisPlayer.SplitHand != null)
             {
                 List<string> PlayerCards = new List<string>();
@@ -141,6 +159,9 @@ namespace csharp_project.Controllers
                 ViewBag.SplitCards = PlayerCards;
             }
             Hand DealerHand = HttpContext.Session.GetObjectFromJson<Hand>("DealerHand");
+=======
+
+>>>>>>> 75adbdd34a2f921130b1a8cd9fedd417c68def3f
             if (DealerHand.PlayerCards != null)
             {
                 List<string> DealerCards = new List<string>();
@@ -150,6 +171,7 @@ namespace csharp_project.Controllers
                     Console.WriteLine("Dealer has " + dCard.Face + " of " + dCard.Suit);
                 }
                 ViewBag.DealerCards = DealerCards;
+                ViewBag.DealerHandValue = DealerHand.HandValue;
             }
             // HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
             return View("Dashboard");
@@ -317,6 +339,7 @@ namespace csharp_project.Controllers
                 thisPlayer.Money -= thisPlayer.CurrHand.BetValue;
                 Console.WriteLine("Money Remaining: " + thisPlayer.Money);
                 thisPlayer.CurrHand.BetValue = thisPlayer.CurrHand.BetValue * 2;
+                HttpContext.Session.SetInt32("CurrBetAmnt", thisPlayer.CurrHand.BetValue);
                 thisPlayer.CurrHand.PlayerCards.Add(currDeck.Deal());
                 thisPlayer.CurrHand.CalculateHandValue();
                 if (thisPlayer.CurrHand.HandValue > 21 && HttpContext.Session.GetString("SplitHand") == "false")
@@ -644,6 +667,15 @@ namespace csharp_project.Controllers
 
 
             return RedirectToAction("Dashboard");
+        }
+
+        //Leaderboard
+        [HttpGet("leaderboard")]
+        public IActionResult Leaderboard()
+        {
+            List<Player> AllPlayers = dbContext.Players.ToList();
+            ViewBag.AllPlayers = AllPlayers;
+            return View("Leaderboard");
         }
 
         //Logout

@@ -31,6 +31,8 @@ namespace csharp_project.Models
         
         [NotMapped]
         public Hand CurrHand {get;set;}
+        [NotMapped]
+        public Hand SplitHand {get;set;}
         // public List<Hand> CurrHands {get;set;}   //Add this back in for when a player can have multiple hands
 
         //Player constructor

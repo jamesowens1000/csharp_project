@@ -92,4 +92,30 @@
     font-family: 'Lobster', cursive;
 }
 
-
+/* Leaderboard Styling */
+.lb-title{
+    color: white;
+    text-align: center;
+    margin: 25px 0 25px 0;
+}
+.btn-link, .btn-link:hover{
+    color: white;
+    text-decoration: none;
+}
+.btn-back{
+    margin-left: 5%;
+    margin-top: 20px;
+}
+#leaderboard{
+    background-color: azure;
+    min-height: 200px;
+    width: 60%;
+    margin-left: 20%;
+    text-align: center;
+}
+.sortable thead {
+    background-color:#eee;
+    color:#666666;
+    font-weight: bold;
+    cursor: default;
+}

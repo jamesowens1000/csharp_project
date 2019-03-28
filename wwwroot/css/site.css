@@ -25,18 +25,18 @@
 }
 .Chip {
     position: relative;
-    top: 83vh;
-    left: 0vw;
+    top: 74vh;
+    left: 7vw;
 }
 .option {
     position: relative;
-    top: 85vh;
-    left: 4vw;
+    top: 76vh;
+    left: 8vw;
 }
 .restart{
     position: relative;
-    top: 85vh;
-    left: 9vw;
+    top: 75vh;
+    left: 12vw;
 }
 .money{
     position: fixed;
@@ -48,6 +48,11 @@
     position: relative;
     top: 3vh;
     right: 18vw;
+}
+.bet{
+    position: relative;
+    top: 83vh;
+    right: 7vw;
 }
 
 

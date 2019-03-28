@@ -5,20 +5,49 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position-y: 106%;
+    overflow:hidden;
 }
 
 .Dealer{
     position: relative;
     top: 15vh;
+    margin: 0px auto;
 }
 .Player{
     position: relative;
-    top: 32vh;
+    top: 29vh;
+    margin: 0px auto;
 }
-
+.Message{
+    position: relative;
+    top: 22vh;
+    text-align:center;
+}
 .Chip {
     position: relative;
-    top: 87vh;
-    left: 20vw;
+    top: 83vh;
+    left: 0vw;
 }
+.option {
+    position: relative;
+    top: 85vh;
+    left: 4vw;
+}
+.restart{
+    position: relative;
+    top: 85vh;
+    left: 9vw;
+}
+.money{
+    position: fixed;
+    top: 88.5vh;
+    left: 77vw;
+    color: rgb(212, 200, 183);
+}
+.logout{
+    position: relative;
+    top: 3vh;
+    right: 18vw;
+}
+
 

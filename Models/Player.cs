@@ -17,7 +17,10 @@ namespace csharp_project.Models
         public string Password {get;set;}
         public double Money {get;set;}
         public int HandsPlayed {get;set;}
+        public int HandsPushed {get;set;}
         public int HandsWon {get;set;}
+        public DateTime CreatedAt {get;set;} = DateTime.Now;
+        public DateTime UpdatedAt {get;set;} = DateTime.Now;
 
         //These are the properties that will NOT be stored in the DB
         [NotMapped]
@@ -33,9 +36,9 @@ namespace csharp_project.Models
         //Player constructor
         public Player()
         {
-            CurrHand = new Hand();
             Money = 1000;
             HandsPlayed = 0;
+            HandsPushed = 0;
             HandsWon = 0;
         }
     }
@@ -48,5 +51,11 @@ namespace csharp_project.Models
         [Required]
         [DataType(DataType.Password)]
         public string Password {get;set;}
+    }
+
+    public class IndexViewModel
+    {
+        public LoginPlayer LogPlayer {get;set;}
+        public Player RegPlayer {get;set;}
     }
 }

@@ -409,6 +409,19 @@ namespace csharp_project.Controllers
             return RedirectToAction("Dashboard");
         }
         //StandCurrHand
+        [HttpGet("Surrender")]
+        public IActionResult Surrender()
+        {
+            Player thisPlayer = HttpContext.Session.GetObjectFromJson<Player>("ThisPlayer");
+            Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
+            RetrievedPlayer.HandsPlayed++;
+            thisPlayer.Money += thisPlayer.CurrHand.BetValue / 2;
+            dbContext.SaveChanges();
+            HttpContext.Session.SetString("message", "You have surrendered your hand and lose half your bet");
+            HttpContext.Session.SetString("Endgame", "true");
+            HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
+            return RedirectToAction("Dashboard");
+        }
         [HttpGet("StandCurrHand")]
         public IActionResult StandCurrHand()
         {
@@ -442,16 +455,10 @@ namespace csharp_project.Controllers
 
             if (thisPlayer.SplitHand.HandValue > 21)
             {
-                Player RetrievedPlayer = dbContext.Players.FirstOrDefault(p => p.Username == thisPlayer.Username);
-                RetrievedPlayer.HandsPlayed++;
-                RetrievedPlayer.Money -= thisPlayer.SplitHand.BetValue;
-                dbContext.SaveChanges();
-                HttpContext.Session.SetString("messagesplit", "Sorry, you busted and you lose your bet!");
-                HttpContext.Session.SetString("Endgame", "true");
                 HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
                 HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);
                 HttpContext.Session.SetObjectAsJson("ThisPlayer", thisPlayer);
-                return RedirectToAction("Dashboard");
+                return RedirectToAction("StandSplitHand");
             }
             HttpContext.Session.SetObjectAsJson("CurrentDeck", currDeck);
             HttpContext.Session.SetObjectAsJson("DealerHand", dealerHand);

@@ -123,3 +123,9 @@
     font-weight: bold;
     cursor: default;
 }
+
+/* HowToPlay Styling */
+.htVideo{
+    margin-left: 32%;
+    margin-top: 5%;
+}

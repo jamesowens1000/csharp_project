@@ -42,18 +42,30 @@
                 else
                 {
                     <table class="option">
+                        @if(@ViewBag.CurrHand == "false")
+                        {
                         <tr>
                            <td ALIGN=CENTER><a href="/hit"><button type="button" class="btn btn-danger">Hit</button></a></td>
                             <td ALIGN=CENTER><a href="/StandCurrHand"><button type="button" class="btn btn-success">Stand</button></a></td>                  
                             @if(ViewBag.ThisPlayer.CurrHand.PlayerCards.Count == 2)
                             {
                                 <td ALIGN=CENTER><a href="/double"><button type="button" class="btn btn-primary">Double</button></a></td>
+                               
                                 @if(ViewBag.ThisPlayer.CurrHand.PlayerCards[0].Face == ViewBag.ThisPlayer.CurrHand.PlayerCards[1].Face)
                                 {
                                     <td ALIGN=CENTER><a href="/split"><button type="button" class="btn btn-secondary">Split</button></a></td> 
                                 }
                             }
                         </tr>
+                        }
+                        @if(@ViewBag.Split == "true" && @ViewBag.CurrHand == "true")
+                        {
+                        <tr>
+                            <td ALIGN=CENTER><a href="/hitsplit"><button type="button" class="btn btn-danger">Hit Split</button></a></td>
+                            <td ALIGN=CENTER><a href="/StandSplitHand"><button type="button" class="btn-lg btn-success">Stand Split</button></a></td>
+                            <td ALIGN=CENTER><a href="/doublesplit"><button type="button" class="btn btn-primary">Double Split</button></a></td>
+                        </tr>
+                        }
                     </table>
                 }
             }
@@ -96,6 +108,10 @@
                         @if(@ViewBag.Message!=null)
                         {
                             <h4>@ViewBag.Message</h4>
+                            @if(@ViewBag.SplitMessage!=null)
+                        {
+                            <h4>@ViewBag.SplitMessage</h4>
+                        }
                         }
                     </div>
                     <table class="Player">
@@ -105,9 +121,22 @@
                                 <td ALIGN=CENTER><IMG SRC="images/@card" height=80% width=80%></TD>
                             }
                         </tr>
+                        @if(@ViewBag.ThisPlayer.SplitHand != null)
+                        {
+                        <tr>
+                            @foreach(var card in @ViewBag.SplitCards)
+                            {
+                                <td ALIGN=CENTER><IMG SRC="images/@card" height=80% width=80%></TD>
+                            }
+                        </tr>
+                        }
                     </table>
                     <div class="PlayerHandValue">
                         <p ALIGN=CENTER>Player Hand Value: @ViewBag.PlayerHandValue</p>
+                        @if(ViewBag.SplitHandValue != null)
+                        {
+                            <p ALIGN=CENTER>Split Player Hand Value: @ViewBag.SplitHandValue</p>
+                        }
                     </div>
                 }
             }

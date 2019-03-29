@@ -50,6 +50,7 @@
                             @if(ViewBag.ThisPlayer.CurrHand.PlayerCards.Count == 2)
                             {
                                 <td ALIGN=CENTER><a href="/double"><button type="button" class="btn btn-primary">Double</button></a></td>
+                                <td ALIGN=CENTER><a href="/surrender"><button type="button" class="btn btn-dark">Surrender</button></a></td>
                                
                                 @if(ViewBag.ThisPlayer.CurrHand.PlayerCards[0].Value == ViewBag.ThisPlayer.CurrHand.PlayerCards[1].Value)
                                 {

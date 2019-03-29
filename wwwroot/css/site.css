@@ -116,6 +116,8 @@
     margin-left: 20%;
     text-align: center;
     font-family: 'Lobster', cursive;
+    animation-duration: 3s;
+    animation-name: slidein;
 }
 .sortable thead {
     background-color:#eee;
@@ -123,6 +125,13 @@
     font-weight: bold;
     cursor: default;
 }
+@keyframes slidein {
+    from {
+      margin-left: 100%;
+    }
+    to {
+        margin-left: 20%;
+    }
 
 /* HowToPlay Styling */
 .htVideo{

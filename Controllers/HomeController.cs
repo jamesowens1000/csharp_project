@@ -678,6 +678,22 @@ namespace csharp_project.Controllers
         {
             List<Player> AllPlayers = dbContext.Players.ToList();
             ViewBag.AllPlayers = AllPlayers;
+            List <string> WinRatioList = new List <string>();
+            foreach (var RetrievedPlayer in AllPlayers)
+            {
+                double WinRatio;
+                if (RetrievedPlayer.HandsPlayed < 1)
+                {
+                    WinRatio = 0;
+                }
+                else
+                {
+                    WinRatio = (double)RetrievedPlayer.HandsWon / RetrievedPlayer.HandsPlayed;
+                }
+                string sWinRate = WinRatio.ToString("P", CultureInfo.InvariantCulture);
+                WinRatioList.Add(sWinRate);
+            }
+            ViewBag.WinRatioList = WinRatioList;
             return View("Leaderboard");
         }
 

@@ -4,15 +4,17 @@
     <thead>
         <th onclick="sortTable(0)">Username</th>
         <th onclick="sortTable(1)">Money</th>
+        <th>Game Played</th>
         <th>Win Ratio</th>
     </thead>
     <tbody>
-        @foreach(var ap in ViewBag.AllPlayers)
+        @for(var i=0; i<ViewBag.AllPlayers.Count; i++)
         {
             <tr>
-                <td>@ap.Username</td>
-                <td>$ @ap.Money</td>
-                <td>@ap.HandsWon / @ap.HandsPlayed</td>
+                <td>@ViewBag.AllPlayers[i].Username</td>
+                <td>$@ViewBag.AllPlayers[i].Money</td>
+                <td>@ViewBag.AllPlayers[i].HandsPlayed</td>
+                <td>@ViewBag.WinRatioList[i]</td>
             </tr>
         }
     </tbody>

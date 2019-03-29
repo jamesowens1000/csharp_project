@@ -51,7 +51,7 @@
                             {
                                 <td ALIGN=CENTER><a href="/double"><button type="button" class="btn btn-primary">Double</button></a></td>
                                
-                                @if(ViewBag.ThisPlayer.CurrHand.PlayerCards[0].Face == ViewBag.ThisPlayer.CurrHand.PlayerCards[1].Face)
+                                @if(ViewBag.ThisPlayer.CurrHand.PlayerCards[0].Value == ViewBag.ThisPlayer.CurrHand.PlayerCards[1].Value)
                                 {
                                     <td ALIGN=CENTER><a href="/split"><button type="button" class="btn btn-secondary">Split</button></a></td> 
                                 }
@@ -69,7 +69,6 @@
                     </table>
                 }
             }
-        
         </div>
         <div class="align-center">
             @if(@ViewBag.ThisPlayer.CurrHand != null)
@@ -141,13 +140,15 @@
                 }
             }
         </div>
+        <div class="col">
+
+        </div>
     </div>
     <div class="row">
         <div class="money">
                 <h2>@ViewBag.ThisPlayer.Money</h2>
         </div>
-        <div class="col">
-            <a class="btn-link" href="HowToPlay"><button type="button" class="btn btn-success">How To Play</button></a>
-        </div>
+        <a href="HowToPlay"><button class="HowToPlay"></button></a>
+        <div class="name"> Welcome @ViewBag.ThisPlayer.Username ! </div>
     </div>
 </div>

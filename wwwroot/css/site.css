@@ -132,9 +132,25 @@
     to {
         margin-left: 20%;
     }
-
+}
 /* HowToPlay Styling */
 .htVideo{
-    margin-left: 32%;
+    margin-left: 28%;
     margin-top: 5%;
+}
+.HowToPlay{
+    position: fixed;
+    top: 87.5vh;
+    left: 93.25vw;
+    background-color: transparent;
+    border: none;    
+    height: 55px;
+    width: 55px;
+}
+.name{
+    position: fixed;
+    top: 4vh;
+    left: 85vw;
+    color: white;
+    font-family: 'Lobster', cursive;
 }

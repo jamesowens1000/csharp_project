@@ -674,6 +674,13 @@ namespace csharp_project.Controllers
             return View("Leaderboard");
         }
 
+        //How To Play page
+        [HttpGet("HowToPlay")]
+        public IActionResult HowToPlay()
+        {
+            return View("HowToPlay");
+        }
+
         //Logout
         [HttpGet("logout")]
         public IActionResult Logout()

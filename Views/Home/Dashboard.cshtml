@@ -1,155 +1,170 @@
 <div class="container">
-    <div class="row">
-        <div class="col">
+
+    <div class="row justify-content-between justify-content-center">
+        <div class="col-3 align-self-center">
             <div class="logout">
                 <a href="logout"><button type="button" class="btn btn-success">Logout</button></a>
                 <a class="btn-link" href="leaderboard"><button type="button" class="btn btn-success">Leaderboard</button></a>
             </div>
-            <div class="bet">
-                <h6>Max Bet: 100</h6>
-                Your Bet: @ViewBag.BetAmount
-                <br>
-                Winning Ratio: @ViewBag.WinRatio
-            </div>
-            @if(@ViewBag.ThisPlayer.CurrHand == null)
-            {
-                <table class="Chip">
-                    <tr>
-                        <td ALIGN=CENTER><a href="/bet/5"><img src="images/Chip_5.png" alt="5 dollar" height="55" width="55"></a></td>
-                        <td ALIGN=CENTER><a href="/bet/10"><img src="images/Chip_10.png" alt="5 dollar" height="55" width="55"></a></td>
-                        <td ALIGN=CENTER><a href="/bet/25"><img src="images/Chip_25.png" alt="5 dollar" height="55" width="55"></a></td>
-                        <td ALIGN=CENTER><a href="/bet/50"><img src="images/Chip_50.png" alt="5 dollar" height="55" width="55"></a></td>
-                        <td ALIGN=CENTER><a href="/bet/100"><img src="images/Chip_100.png" alt="5 dollar" height="55" width="55"></a></td>
-                        @if(ViewBag.BetAmount > 0)
-                        {
-                            <td>
-                                <a href="/submitBet"><button type="button" class="btn btn-success">Bet</button></a>
-                            </td>
-                        }
-                    </tr>
-                </table>
-            }
-            @if(@ViewBag.ThisPlayer.CurrHand != null)
-            {
-                @if(ViewBag.EndGame == "true")
-                {
-                    <table class="restart">
-                        <tr>
-                            <td ALIGN=CENTER><a href="/endgame"><button type="button" class="btn-lg btn-success">Play Again</button></a></td>
-                        </tr>
-                    </table>
-                } 
-                else
-                {
-                    <table class="option">
-                        @if(@ViewBag.CurrHand == "false")
-                        {
-                        <tr>
-                           <td ALIGN=CENTER><a href="/hit"><button type="button" class="btn btn-danger">Hit</button></a></td>
-                            <td ALIGN=CENTER><a href="/StandCurrHand"><button type="button" class="btn btn-success">Stand</button></a></td>                  
-                            @if(ViewBag.ThisPlayer.CurrHand.PlayerCards.Count == 2)
-                            {
-                                <td ALIGN=CENTER><a href="/double"><button type="button" class="btn btn-primary">Double</button></a></td>
-                                <td ALIGN=CENTER><a href="/surrender"><button type="button" class="btn btn-dark">Surrender</button></a></td>
-                               
-                                @if(ViewBag.ThisPlayer.CurrHand.PlayerCards[0].Value == ViewBag.ThisPlayer.CurrHand.PlayerCards[1].Value)
-                                {
-                                    <td ALIGN=CENTER><a href="/split"><button type="button" class="btn btn-secondary">Split</button></a></td> 
-                                }
-                            }
-                        </tr>
-                        }
-                        @if(@ViewBag.Split == "true" && @ViewBag.CurrHand == "true")
-                        {
-                        <tr>
-                            <td ALIGN=CENTER><a href="/hitsplit"><button type="button" class="btn btn-danger">Hit Split</button></a></td>
-                            <td ALIGN=CENTER><a href="/StandSplitHand"><button type="button" class="btn btn-success">Stand Split</button></a></td>
-                            <td ALIGN=CENTER><a href="/doublesplit"><button type="button" class="btn btn-primary">Double Split</button></a></td>
-                        </tr>
-                        }
-                    </table>
-                }
-            }
         </div>
-        <div class="align-center">
-            @if(@ViewBag.ThisPlayer.CurrHand != null)
-            {
-                @if(@ViewBag.ThisPlayer.CurrHand.PlayerCards.Count > 0)
-                { 
-                    <table class="Dealer">
-                        <tr>
-                            <div class=DealerHandValue>
-                                @if(ViewBag.Stand != null)
-                                {
-                                    <p ALIGN=CENTER>Dealer Hand Value: @ViewBag.DealerHandValue</p>
-                                }
-                            </div>
-                            @for(var i=0; i<@ViewBag.DealerCards.Count; i++)
-                            {
-                                @if(i == 0)
-                                {
-                                    @if(@ViewBag.Stand == null)
-                                    {
-                                        <td ALIGN=CENTER><IMG SRC="images/dealer.png" height=80% width=80%></TD>
-                                    } 
-                                    else 
-                                    {
-                                        <td ALIGN=CENTER><IMG SRC="images/@ViewBag.DealerCards[i]" height=80% width=80%></TD>
-                                    }
-                                }
-                                else
-                                {
-                                    <td ALIGN=CENTER><IMG SRC="images/@ViewBag.DealerCards[i]" height=80% width=80%></TD>
-                                }
-                            }
-                        </tr>
-                    </table>
-                    <div class="Message">
-                        @if(@ViewBag.Message!=null)
-                        {
-                            <h4>@ViewBag.Message</h4>
-                            @if(@ViewBag.SplitMessage!=null)
-                        {
-                            <h4>@ViewBag.SplitMessage</h4>
-                        }
-                        }
-                    </div>
-                    <table class="Player">
-                        <tr>
-                            @foreach(var card in @ViewBag.PlayerCards)
-                            {
-                                <td ALIGN=CENTER><IMG SRC="images/@card" height=80% width=80%></TD>
-                            }
-                        </tr>
-                        @if(@ViewBag.ThisPlayer.SplitHand != null)
-                        {
-                        <tr>
-                            @foreach(var card in @ViewBag.SplitCards)
-                            {
-                                <td ALIGN=CENTER><IMG SRC="images/@card" height=80% width=80%></TD>
-                            }
-                        </tr>
-                        }
-                    </table>
-                    <div class="PlayerHandValue">
-                        <p ALIGN=CENTER>Player Hand Value: @ViewBag.PlayerHandValue</p>
-                        @if(ViewBag.SplitHandValue != null)
-                        {
-                            <p ALIGN=CENTER>Split Player Hand Value: @ViewBag.SplitHandValue</p>
-                        }
-                    </div>
-                }
-            }
-        </div>
-        <div class="col">
-
+        <div class="col-2 align-self-center">
+            <div class="name"> Welcome @ViewBag.ThisPlayer.Username ! </div>
         </div>
     </div>
-    <div class="row">
-        <div class="money">
-                <h2>@ViewBag.ThisPlayer.Money</h2>
+
+<br><br>
+
+    <div id="forceHeight" class="align-center">
+        @if(@ViewBag.ThisPlayer.CurrHand != null)
+        {
+        @if(@ViewBag.ThisPlayer.CurrHand.PlayerCards.Count > 0)
+        {
+        <div class="row justify-content-center DealerHandValue">
+            @if(ViewBag.Stand != null)
+            {
+            <div class="col-2 align-self-center">
+                Dealer Hand Value: @ViewBag.DealerHandValue
+            </div>
+            }
         </div>
-        <a href="HowToPlay"><button class="HowToPlay"></button></a>
-        <div class="name"> Welcome @ViewBag.ThisPlayer.Username ! </div>
+        <div class="row justify-content-center">
+            <table class="Dealer">
+                <tr>
+                    @for(var i=0; i<@ViewBag.DealerCards.Count; i++) { @if(i==0) { @if(@ViewBag.Stand==null) { <td
+                        ALIGN=CENTER><IMG SRC="images/dealer.png" height=80% width=80%></TD>
+                        }
+                        else
+                        {
+                        <td ALIGN=CENTER><IMG SRC="images/@ViewBag.DealerCards[i]" height=80% width=80%></TD>
+                        }
+                        }
+                        else
+                        {
+                        <td ALIGN=CENTER><IMG SRC="images/@ViewBag.DealerCards[i]" height=80% width=80%></TD>
+                        }
+                        }
+                </tr>
+            </table>
+        </div>
+        <div class="row justify-content-center">
+            <div class="Message">
+                @if(@ViewBag.Message!=null)
+                {
+                <h4>@ViewBag.Message</h4>
+                @if(@ViewBag.SplitMessage!=null)
+                {
+                <h4>@ViewBag.SplitMessage</h4>
+                }
+                }
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <table class="Player">
+                <tr>
+                    @foreach(var card in @ViewBag.PlayerCards)
+                    {
+                    <td ALIGN=CENTER><IMG SRC="images/@card" height=80% width=80%></TD>
+                    }
+                </tr>
+                @if(@ViewBag.ThisPlayer.SplitHand != null)
+                {
+                <tr>
+                    @foreach(var card in @ViewBag.SplitCards)
+                    {
+                    <td ALIGN=CENTER><IMG SRC="images/@card" height=80% width=80%></TD>
+                    }
+                </tr>
+                }
+            </table>
+        </div>
+        <div class="row justify-content-center">
+            <div class="PlayerHandValue">
+                <p ALIGN=CENTER>Player Hand Value: @ViewBag.PlayerHandValue</p>
+                @if(ViewBag.SplitHandValue != null)
+                {
+                <p ALIGN=CENTER>Split Player Hand Value: @ViewBag.SplitHandValue</p>
+                }
+            </div>
+        </div>
+        }
+        }
+    </div>
+
+
+    <div class="row bet">
+        <div class="col-2 align-self-center">
+            <h6>Max Bet: 100</h6>
+            Your Bet: @ViewBag.BetAmount
+            <br>
+            Winning Ratio: @ViewBag.WinRatio
+        </div>
+        <div class="col-3 align-self-center">
+            @if(@ViewBag.ThisPlayer.CurrHand == null)
+            {
+            <table class="Chip pull-left">
+                <tr>
+                    <td ALIGN=CENTER><a href="/bet/5"><img src="images/Chip_5.png" alt="5 dollar" height="55" width="55"></a></td>
+                    <td ALIGN=CENTER><a href="/bet/10"><img src="images/Chip_10.png" alt="5 dollar" height="55" width="55"></a></td>
+                    <td ALIGN=CENTER><a href="/bet/25"><img src="images/Chip_25.png" alt="5 dollar" height="55" width="55"></a></td>
+                    <td ALIGN=CENTER><a href="/bet/50"><img src="images/Chip_50.png" alt="5 dollar" height="55" width="55"></a></td>
+                    <td ALIGN=CENTER><a href="/bet/100"><img src="images/Chip_100.png" alt="5 dollar" height="55" width="55"></a></td>
+                    @if(ViewBag.BetAmount > 0)
+                    {
+                    <td>
+                        <a href="/submitBet"><button type="button" class="btn btn-success">Bet</button></a>
+                    </td>
+                    }
+                </tr>
+            </table>
+            }
+
+            @if(@ViewBag.ThisPlayer.CurrHand != null)
+            {
+            @if(ViewBag.EndGame == "true")
+            {
+            <table class="restart">
+                <tr>
+                    <td ALIGN=CENTER><a href="/endgame"><button type="button" class="btn btn-success">Play Again</button></a></td>
+                </tr>
+            </table>
+            }
+            else
+            {
+            <table class="option align-self-center pull-left-btn">
+                @if(@ViewBag.CurrHand == "false")
+                {
+                <tr>
+                    <td ALIGN=CENTER><a href="/hit"><button type="button" class="btn btn-danger">Hit</button></a></td>
+                    <td ALIGN=CENTER><a href="/StandCurrHand"><button type="button" class="btn btn-success">Stand</button></a></td>
+                    @if(ViewBag.ThisPlayer.CurrHand.PlayerCards.Count == 2)
+                    {
+                    <td ALIGN=CENTER><a href="/double"><button type="button" class="btn btn-primary">Double</button></a></td>
+                    <td ALIGN=CENTER><a href="/surrender"><button type="button" class="btn btn-dark">Surrender</button></a></td>
+
+                    @if(ViewBag.ThisPlayer.CurrHand.PlayerCards[0].Value == ViewBag.ThisPlayer.CurrHand.PlayerCards[1].Value)
+                    {
+                    <td ALIGN=CENTER><a href="/split"><button type="button" class="btn btn-secondary">Split</button></a></td>
+                    }
+                    }
+                </tr>
+                }
+                @if(@ViewBag.Split == "true" && @ViewBag.CurrHand == "true")
+                {
+                <tr>
+                    <td ALIGN=CENTER><a href="/hitsplit"><button type="button" class="btn btn-danger">Hit Split</button></a></td>
+                    <td ALIGN=CENTER><a href="/StandSplitHand"><button type="button" class="btn btn-success">Stand Split</button></a></td>
+                    <td ALIGN=CENTER><a href="/doublesplit"><button type="button" class="btn btn-primary">Double Split</button></a></td>
+                </tr>
+                }
+            </table>
+            }
+            }
+        </div>
+        <div class="col-1 align-self-center money adjust-right">     
+            <h2>@ViewBag.ThisPlayer.Money</h2>    
+        </div>
+        <div class="col-2 align-self-center">
+            <a href="HowToPlay"><button class="HowToPlay"></button></a>  
+        </div>
     </div>
 </div>

@@ -23,8 +23,10 @@
         </environment>
     </head>
     <body>
-        <div id="wrapper">
-            @RenderBody()
+        <div id="base">
+            <div id="wrapper">
+                @RenderBody()
+            </div>
         </div>
         <environment include="Development">
             <script src="~/js/sorttable.js"></script>
